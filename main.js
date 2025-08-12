@@ -1,0 +1,344 @@
+// Use a self-invoking async function to handle all the logic
+(async function () {
+  const countrySelect = document.getElementById("country-select");
+  const portSelect = document.getElementById("port-select");
+  const terminalsContainer = document.getElementById("terminals-container");
+  const loadingIndicator = document.createElement("p");
+  loadingIndicator.className = "text-center text-gray-500";
+  loadingIndicator.textContent = "Загрузка данных...";
+  terminalsContainer.appendChild(loadingIndicator);
+
+  let data = {};
+  // Путь к xlsx-файлу
+  const xlsxFilePath = "GISIS_all_world.xlsx";
+
+  // Функция загрузки и парсинга xlsx
+  async function loadXLSX() {
+    try {
+      const response = await fetch(xlsxFilePath);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(new Uint8Array(arrayBuffer), {
+        type: "array",
+      });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      parseXLSX(rows);
+    } catch (error) {
+      console.error("Loading error:", error);
+      terminalsContainer.innerHTML = `<p class="text-red-500 text-center">Loading error. Please make sure the file \"${xlsxFilePath}\" is in the same folder.</p>`;
+    }
+  }
+
+  function parseXLSX(rows) {
+    data = {};
+    if (!rows || rows.length < 2) return;
+    const headers = rows[0].map((h) => (h ? h.toString().trim() : ""));
+    const countryNameIndex = headers.indexOf("Country Name");
+    const portNameIndex = headers.indexOf("Port Name");
+    const facilityNameIndex = headers.indexOf("Facility Name");
+    const imoNumberIndex = headers.indexOf("IMO Port Facility Number");
+    const descriptionIndex = headers.indexOf("Description");
+    const longitudeIndex = headers.indexOf("Longitude");
+    const latitudeIndex = headers.indexOf("Latitude");
+    for (let i = 1; i < rows.length; i++) {
+      const values = rows[i];
+      const countryName = values[countryNameIndex];
+      const portName = values[portNameIndex];
+      if (!countryName || !portName) continue;
+      if (!data[countryName]) data[countryName] = {};
+      if (!data[countryName][portName]) data[countryName][portName] = [];
+      const terminal = {
+        locode: values[facilityNameIndex] || "N/A",
+        gisisNumber: values[imoNumberIndex] || "N/A",
+        description: values[descriptionIndex] || "No description provided.",
+        longitude: values[longitudeIndex] || "N/A",
+        latitude: values[latitudeIndex] || "N/A",
+      };
+      data[countryName][portName].push(terminal);
+    }
+    populateCountryDropdown();
+    terminalsContainer.innerHTML =
+      '<p class="text-center text-gray-500">Choose a port to see the terminals.</p>';
+  }
+  // --- КОНЕЦ ДОБАВЛЕНИЯ ---
+
+  // --- ДОБАВЛЕНО: функция преобразования координат ---
+  function parseCoordinateString(coordStr, isLat) {
+    if (
+      coordStr === "N/A" ||
+      coordStr === undefined ||
+      coordStr === null ||
+      coordStr === ""
+    )
+      return "N/A";
+
+    // Если это строка в формате координат
+    if (typeof coordStr === "string") {
+      // Для долготы: формат DDDMMSS[EW] (7-8 символов)
+      // Для широты: формат DDMMSS[NS] (6-7 символов)
+      if (!isLat && coordStr.length >= 7) {
+        // Longitude format: DDDMMSS[EW]
+        const match = coordStr.match(/^(\d{3})(\d{2})(\d{2})([EW])$/);
+        if (match) {
+          const degrees = parseInt(match[1]);
+          const minutes = parseInt(match[2]);
+          const seconds = parseInt(match[3]);
+          const direction = match[4];
+          return `${degrees.toString().padStart(3, "0")}°${minutes
+            .toString()
+            .padStart(2, "0")}'${seconds
+            .toString()
+            .padStart(2, "0")}" ${direction}`;
+        }
+      } else if (isLat && coordStr.length >= 6) {
+        // Latitude format: DDMMSS[NS]
+        const match = coordStr.match(/^(\d{2})(\d{2})(\d{2})([NS])$/);
+        if (match) {
+          const degrees = parseInt(match[1]);
+          const minutes = parseInt(match[2]);
+          const seconds = parseInt(match[3]);
+          const direction = match[4];
+          return `${degrees.toString().padStart(2, "0")}°${minutes
+            .toString()
+            .padStart(2, "0")}'${seconds
+            .toString()
+            .padStart(2, "0")}" ${direction}`;
+        }
+      }
+    }
+
+    // Если это число (старый формат), используем старую логику
+    let num = parseFloat(coordStr);
+    if (isNaN(num)) return coordStr;
+
+    // Если число больше 180 (долгота) или 90 (широта), делим на 1000
+    if ((isLat && Math.abs(num) > 90) || (!isLat && Math.abs(num) > 180)) {
+      num = num / 1000;
+    }
+
+    const absolute = Math.abs(num);
+    const degrees = Math.floor(absolute);
+    const minutesNotTruncated = (absolute - degrees) * 60;
+    const minutes = Math.floor(minutesNotTruncated);
+    const seconds = Math.round((minutesNotTruncated - minutes) * 60);
+    const direction = isLat ? (num >= 0 ? "N" : "S") : num >= 0 ? "E" : "W";
+    return `${degrees}°${minutes}'${seconds}" ${direction}`;
+  }
+  // --- КОНЕЦ ДОБАВЛЕНИЯ ---
+
+  // Populate the country dropdown with country names from the data
+  function populateCountryDropdown() {
+    countrySelect.innerHTML =
+      '<option value="" disabled selected>Select a country</option>';
+    const countries = Object.keys(data).sort();
+    countries.forEach((country) => {
+      const option = document.createElement("option");
+      option.value = country;
+      option.textContent = country;
+      countrySelect.appendChild(option);
+    });
+    countrySelect.disabled = false; // Enable dropdown once data is loaded
+  }
+
+  // Handle country selection
+  countrySelect.addEventListener("change", (event) => {
+    const selectedCountry = event.target.value;
+    populatePortDropdown(selectedCountry);
+    terminalsContainer.innerHTML =
+      '<p class="text-center text-gray-500">Select a port to see the terminals.</p>';
+  });
+
+  // Populate the port dropdown based on the selected country
+  function populatePortDropdown(country) {
+    portSelect.innerHTML =
+      '<option value="" disabled selected>Select a port</option>';
+    if (data[country]) {
+      const ports = Object.keys(data[country]).sort();
+      ports.forEach((port) => {
+        const option = document.createElement("option");
+        option.value = port;
+        option.textContent = port;
+        portSelect.appendChild(option);
+      });
+      portSelect.disabled = false;
+    } else {
+      portSelect.disabled = true;
+    }
+  }
+
+  // Handle port selection
+  portSelect.addEventListener("change", (event) => {
+    const selectedCountry = countrySelect.value;
+    const selectedPort = event.target.value;
+    displayTerminals(selectedCountry, selectedPort);
+  });
+
+  // Display terminal information
+  function displayTerminals(country, port) {
+    terminalsContainer.innerHTML = ""; // Clear previous content
+    if (data[country] && data[country][port]) {
+      const terminals = data[country][port];
+      if (terminals.length === 0) {
+        terminalsContainer.innerHTML = `<p class="text-center text-gray-500">No terminals found for ${port}.</p>`;
+      } else {
+        terminals.forEach((terminal) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-white p-6 rounded-xl shadow-md border border-gray-200 transition-transform duration-200 hover:shadow-lg hover:scale-[1.01]";
+          card.innerHTML = `
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${
+                          terminal.locode
+                        }</h3>
+                        <p class="text-sm text-gray-500 mb-4">${
+                          terminal.description
+                        }</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 mb-4">
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">GISIS Number:</p>
+                                <p class="text-base font-semibold text-blue-600">${
+                                  terminal.gisisNumber
+                                }</p>
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">Coordinates:</p>
+                                <p class="text-base text-gray-800">${parseCoordinateString(
+                                  terminal.latitude,
+                                  true
+                                )}, ${parseCoordinateString(
+            terminal.longitude,
+            false
+          )}</p>
+                            </div>
+                        </div>
+                        <button class="generate-info-btn w-full ${
+                          navigator.onLine
+                            ? "bg-blue-600 hover:bg-blue-700"
+                            : "bg-gray-400 cursor-not-allowed"
+                        } text-white font-bold py-2 px-4 rounded-lg shadow transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                                data-country="${country}"
+                                data-port="${port}"
+                                data-terminal="${terminal.locode}"
+                                data-description="${terminal.description}"
+                                ${
+                                  !navigator.onLine
+                                    ? 'title="Please connect to internet to continue"'
+                                    : ""
+                                }>
+                            ✨ Generate Port Info
+                        </button>
+                        <div class="generated-info mt-4 p-4 bg-gray-50 rounded-lg hidden"></div>
+                    `;
+          terminalsContainer.appendChild(card);
+        });
+
+        // Add event listeners for the new buttons
+        document.querySelectorAll(".generate-info-btn").forEach((button) => {
+          button.addEventListener("click", async (event) => {
+            const btn = event.target;
+            const generatedInfoDiv = btn.nextElementSibling;
+            const country = btn.getAttribute("data-country");
+            const port = btn.getAttribute("data-port");
+            const terminal = btn.getAttribute("data-terminal");
+            const description = btn.getAttribute("data-description");
+
+            btn.disabled = true;
+            btn.textContent = "Generating...";
+            generatedInfoDiv.classList.remove("hidden");
+            generatedInfoDiv.textContent =
+              "Please wait, fetching information...";
+
+            try {
+              // Проверка подключения к интернету
+              if (!navigator.onLine) {
+                throw new Error("No internet connection");
+              }
+
+              // Construct the prompt for the LLM
+              const prompt = `Provide a detailed summary of the ${terminal} terminal at the port of ${port} in ${country}. The terminal is described as: "${description}". Include information about its cargo capabilities, strategic importance, or any other relevant details that a seafarer might find useful. Format the response as a single, coherent paragraph.`;
+
+              // Prepare the API payload
+              const chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+              const payload = { contents: chatHistory };
+              const apiKey = "AIzaSyAFDjVTE4DrmuuNLOHVRSc_X2h_9iggCJM";
+              const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+              // Exponential backoff retry logic
+              const maxRetries = 5;
+              const baseDelay = 1000;
+              let response;
+              for (let i = 0; i < maxRetries; i++) {
+                try {
+                  response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                  });
+                  if (response.status !== 429) {
+                    break; // Success or non-rate-limit error, so stop retrying
+                  }
+                  const delay = baseDelay * 2 ** i;
+                  console.warn(`Rate limit hit. Retrying in ${delay}ms...`);
+                  await new Promise((resolve) => setTimeout(resolve, delay));
+                } catch (e) {
+                  if (i === maxRetries - 1) throw e;
+                  const delay = baseDelay * 2 ** i;
+                  console.error(`Fetch failed. Retrying in ${delay}ms...`);
+                  await new Promise((resolve) => setTimeout(resolve, delay));
+                }
+              }
+
+              const result = await response.json();
+
+              if (
+                result.candidates &&
+                result.candidates.length > 0 &&
+                result.candidates[0].content &&
+                result.candidates[0].content.parts &&
+                result.candidates[0].content.parts.length > 0
+              ) {
+                const text = result.candidates[0].content.parts[0].text;
+                generatedInfoDiv.textContent = text;
+              } else {
+                generatedInfoDiv.textContent =
+                  "Could not generate information. Please try again.";
+              }
+            } catch (error) {
+              console.error("Gemini API error:", error);
+              if (error.message === "No internet connection") {
+                generatedInfoDiv.textContent =
+                  "Please connect to internet to continue.";
+              } else {
+                generatedInfoDiv.textContent =
+                  "An error occurred while fetching information. Please try again.";
+              }
+            } finally {
+              btn.disabled = false;
+              btn.textContent = "✨ Generate Port Info";
+            }
+          });
+        });
+      }
+    }
+  }
+
+  // Function to reset to initial state
+  function resetToInitialState() {
+    countrySelect.value = "";
+    portSelect.innerHTML =
+      '<option value="" disabled selected>Select a country first</option>';
+    portSelect.disabled = true;
+    terminalsContainer.innerHTML =
+      '<p class="text-center text-gray-500">Select a port to see the terminals.</p>';
+  }
+
+  // Handle home link click
+  document.getElementById("home-link").addEventListener("click", (event) => {
+    event.preventDefault();
+    resetToInitialState();
+  });
+
+  // Initial data load
+  await loadXLSX();
+})();

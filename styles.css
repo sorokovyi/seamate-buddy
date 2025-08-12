@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6; /* Light gray background */
+}
+
+/* Адаптивное фоновое изображение */
+@media (max-width: 768px) {
+    body {
+        background-size: cover !important;
+        background-position: center !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    body {
+        background-size: cover !important;
+        background-position: center !important;
+    }
+}
+
+@media (min-width: 1025px) {
+    body {
+        background-size: cover !important;
+        background-position: center !important;
+    }
+}

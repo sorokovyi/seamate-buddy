@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeaMate Buddy</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <!-- Use Tailwind CSS for a clean, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4" style="background-image: url('background.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: fixed;">
+
+    <!-- Main application container -->
+    <div class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto space-y-6 md:p-10">
+
+        <!-- Header section -->
+        <header class="text-center space-y-2">
+            <a href="#" id="home-link" class="flex items-center justify-center space-x-3 mb-4 hover:scale-110 transition-transform duration-300 cursor-pointer">
+                <img src="logo.png" alt="Logo" class="w-12 h-12">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900">SeaMate Buddy</h1>
+            </a>
+            <p class="text-gray-600 text-lg">Your best partner for port information.</p>
+        </header>
+
+        <!-- Dropdowns container -->
+        <div class="flex flex-col md:flex-row gap-4">
+            <!-- Country dropdown -->
+            <div class="flex-1">
+                <label for="country-select" class="block text-sm font-medium text-gray-700 mb-1">Select a Country:</label>
+                <select id="country-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg shadow-sm transition duration-150 ease-in-out">
+                    <option value="" disabled selected>Loading countries...</option>
+                </select>
+            </div>
+            
+            <!-- Port dropdown -->
+            <div class="flex-1">
+                <label for="port-select" class="block text-sm font-medium text-gray-700 mb-1">Select a Port:</label>
+                <select id="port-select" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg shadow-sm transition duration-150 ease-in-out" disabled>
+                    <option value="" disabled selected>Select a country first</option>
+                </select>
+            </div>
+        </div>
+        
+        <!-- Terminals display area -->
+        <div id="terminals-container" class="mt-6 space-y-4">
+            <p class="text-center text-gray-500">Select a port to see the terminals.</p>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <!-- <input type="file" id="xlsx-input" class="mb-4 block" accept=".xlsx" /> -->
+    <script src="main.js"></script>
+
+</body>
+</html>

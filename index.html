@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SeaMate Buddy</title>
+    <link rel="icon" type="image/png" href="logo.png" />
+    <!-- Use Tailwind CSS for a clean, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <!-- Main application container -->
+    <div
+      class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto space-y-6 md:p-10 relative overflow-hidden"
+    >
+      <!-- Header section -->
+      <header class="text-center space-y-2">
+        <div class="relative flex items-center justify-center mb-4">
+          <!-- Burger menu button - absolute positioned left -->
+          <button
+            id="menu-btn"
+            class="absolute left-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0"
+            title="Open menu"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Logo and title - always centered -->
+          <a
+            href="#"
+            id="home-link"
+            class="flex items-center justify-center space-x-2 sm:space-x-3 hover:scale-110 transition-transform duration-300 cursor-pointer px-12 sm:px-0"
+          >
+            <img src="logo.png" alt="Logo" class="w-10 h-10 sm:w-12 sm:h-12" />
+            <h1
+              class="text-xl sm:text-2xl md:text-3xl md:text-4xl font-extrabold text-gray-900"
+            >
+              SeaMate Buddy
+            </h1>
+          </a>
+
+          <!-- Search button - absolute positioned right -->
+          <button
+            id="search-btn"
+            class="absolute right-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0 hidden"
+            title="Search ports globally"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              ></path>
+            </svg>
+          </button>
+        </div>
+        <p class="text-gray-600 text-lg">Your best partner at sea</p>
+      </header>
+
+      <!-- Search modal (hidden by default) -->
+      <div
+        id="search-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4"
+      >
+        <div
+          class="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-96 flex flex-col"
+        >
+          <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-semibold text-gray-900">
+                Search Ports Globally
+              </h3>
+              <button
+                id="close-search"
+                class="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Type port name..."
+              class="w-full mt-3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div id="search-results" class="flex-1 overflow-y-auto p-4">
+            <p class="text-gray-500 text-center">
+              Start typing to search for ports...
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aside menu (hidden by default) -->
+      <aside
+        id="aside-menu"
+        class="absolute top-0 left-0 z-50 w-64 h-full bg-white rounded-3xl shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out overflow-hidden"
+      >
+        <div class="flex flex-col h-full">
+          <!-- Menu header with close button positioned exactly like burger menu -->
+          <div
+            class="relative flex items-center justify-center p-4 border-b border-gray-200"
+            style="padding-top: 1.5rem; padding-bottom: 1.5rem"
+          >
+            <!-- Close button positioned exactly like burger menu button -->
+            <button
+              id="close-menu"
+              class="absolute left-4 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0"
+              title="Close menu"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+            <!-- Centered menu title -->
+            <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
+          </div>
+
+          <!-- Menu items -->
+          <nav class="flex-1 p-4">
+            <ul class="space-y-2">
+              <li>
+                <a
+                  href="#"
+                  id="port-info-link"
+                  class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                >
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      fill="none"
+                    >
+                      <!-- Anchor shaft (main vertical line) -->
+                      <line x1="12" y1="6" x2="12" y2="18"></line>
+                      <!-- Anchor ring at top -->
+                      <circle cx="12" cy="4" r="2"></circle>
+                      <!-- Anchor stock (horizontal crossbar) -->
+                      <line x1="8" y1="8" x2="16" y2="8"></line>
+                      <!-- Left fluke arm -->
+                      <path d="M12 18 L8 14"></path>
+                      <!-- Right fluke arm -->
+                      <path d="M12 18 L16 14"></path>
+                      <!-- Left fluke hook -->
+                      <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                      <!-- Right fluke hook -->
+                      <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+                    </g>
+                  </svg>
+                  Port Info
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  id="gyro-calculator-link"
+                  class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                >
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  Mate Programs
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  id="eta-calculator-link"
+                  class="flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                >
+                  <svg
+                    class="w-5 h-5 mr-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  ETA Calculator
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- Start Page (default view) -->
+      <div id="start-page" class="text-center space-y-8">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+          Please choose service
+        </h2>
+
+        <!-- Service buttons -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <!-- Port Info Button -->
+          <button
+            id="start-port-info-btn"
+            class="flex flex-col items-center justify-center p-8 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-300 rounded-xl transition-all duration-200 hover:scale-105 group"
+          >
+            <svg
+              class="w-12 h-12 text-blue-600 mb-4 group-hover:scale-110 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <g
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                fill="none"
+              >
+                <!-- Anchor shaft (main vertical line) -->
+                <line x1="12" y1="6" x2="12" y2="18"></line>
+                <!-- Anchor ring at top -->
+                <circle cx="12" cy="4" r="2"></circle>
+                <!-- Anchor stock (horizontal crossbar) -->
+                <line x1="8" y1="8" x2="16" y2="8"></line>
+                <!-- Left fluke arm -->
+                <path d="M12 18 L8 14"></path>
+                <!-- Right fluke arm -->
+                <path d="M12 18 L16 14"></path>
+                <!-- Left fluke hook -->
+                <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                <!-- Right fluke hook -->
+                <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+              </g>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">Port Info</h3>
+            <p class="text-gray-600 text-center">
+              Find detailed information about ports and terminals worldwide
+            </p>
+          </button>
+
+          <!-- Gyro Error Calculator Button -->
+          <button
+            id="start-gyro-calculator-btn"
+            class="flex flex-col items-center justify-center p-8 bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-300 rounded-xl transition-all duration-200 hover:scale-105 group"
+          >
+            <svg
+              class="w-12 h-12 text-green-600 mb-4 group-hover:scale-110 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+              ></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              Mate Programs
+            </h3>
+            <p class="text-gray-600 text-center">
+              Professional maritime tools
+            </p>
+          </button>
+
+          <!-- ETA Calculator Button -->
+          <button
+            id="start-eta-calculator-btn"
+            class="flex flex-col items-center justify-center p-8 bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-300 rounded-xl transition-all duration-200 hover:scale-105 group"
+          >
+            <svg
+              class="w-12 h-12 text-orange-600 mb-4 group-hover:scale-110 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">
+              ETA Calculator
+            </h3>
+            <p class="text-gray-600 text-center">
+              Calculate estimated time of arrival for voyage planning
+            </p>
+          </button>
+        </div>
+      </div>
+
+      <!-- ETA Calculator Page (hidden by default) -->
+      <div id="eta-calculator-page" class="hidden">
+        <div class="space-y-6">
+          <!-- Page Header -->
+          <div class="text-center mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              ETA Calculator
+            </h2>
+            <p class="text-gray-600">
+              Calculate estimated time of arrival for voyage planning
+            </p>
+          </div>
+
+          <!-- Voyages Container -->
+          <div id="voyages-container" class="space-y-6">
+            <!-- Voyages will be added here dynamically -->
+          </div>
+
+          <!-- Add Voyage Button -->
+          <div class="text-center">
+            <button
+              id="add-voyage-btn"
+              class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 hover:scale-105"
+            >
+              + Add Voyage
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mate Programs Page (hidden by default) -->
+      <div id="gyro-calculator-page" class="hidden">
+        <div class="space-y-6">
+          <!-- Page Header -->
+          <div class="text-center mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+              Mate Programs
+            </h2>
+            <p class="text-gray-600">
+              Professional maritime tools
+            </p>
+          </div>
+
+          <!-- Maritime Tools Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            
+            <!-- Signal Flags Tool -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+              <div class="flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Signal Flags</h3>
+              <p class="text-gray-600 text-center mb-4 text-sm">
+                Signal flags, Morse code, Phonetic alphabet
+              </p>
+              <button 
+                onclick="window.location.href='flags_ABC.html'" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform"
+              >
+                Open Signal Flags
+              </button>
+            </div>
+
+            <!-- Gyro Error Calculator Tool -->
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
+              <div class="flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Gyro Error Calculator</h3>
+              <p class="text-gray-600 text-center mb-4 text-sm">
+                Calculate gyrocompass errors for navigation
+              </p>
+              <button 
+                id="download-observation-btn"
+                class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform"
+              >
+                Download
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Port Info Page (hidden by default) -->
+      <div id="port-info-page" class="hidden">
+        <!-- Dropdowns container -->
+        <div class="flex flex-col md:flex-row gap-4">
+          <!-- Country dropdown -->
+          <div class="flex-1">
+            <label
+              for="country-select"
+              class="block text-lg font-semibold text-gray-700 mb-2"
+              >Select a Country:</label
+            >
+            <select
+              id="country-select"
+              class="mt-1 block w-full pl-4 pr-10 py-3 text-lg border focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-lg shadow-sm transition duration-150 ease-in-out"
+            >
+              <option value="" disabled selected>Loading countries...</option>
+            </select>
+          </div>
+
+          <!-- Port dropdown -->
+          <div class="flex-1">
+            <label
+              for="port-select"
+              class="block text-lg font-semibold text-gray-700 mb-2"
+              >Select a Port:</label
+            >
+            <select
+              id="port-select"
+              class="mt-1 block w-full pl-4 pr-10 py-3 text-lg border focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-lg shadow-sm transition duration-150 ease-in-out"
+              disabled
+            >
+              <option value="" disabled selected>Select a country first</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Terminals display area -->
+        <div id="terminals-container" class="mt-6 space-y-4">
+          <p class="text-center text-gray-500">
+            Select a port to see the terminals.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+    <!-- <input type="file" id="xlsx-input" class="mb-4 block" accept=".xlsx" /> -->
+    <script src="main.js"></script>
+    
+    <!-- Navigation handler for flags_ABC.html menu -->
+    <script>
+      // Handle navigation from flags_ABC.html menu
+      window.addEventListener('load', () => {
+        const navigateTo = sessionStorage.getItem('navigateTo');
+        if (navigateTo) {
+          sessionStorage.removeItem('navigateTo'); // Clear the intent
+          
+          // Navigate to the appropriate section
+          switch(navigateTo) {
+            case 'port-info':
+              // Show port info page/section
+              const portInfoBtn = document.getElementById('start-port-info-btn');
+              if (portInfoBtn) {
+                portInfoBtn.click();
+              }
+              break;
+            case 'mate-programs':
+              // Show mate programs page/section
+              const mateProgramsBtn = document.getElementById('start-gyro-calculator-btn');
+              if (mateProgramsBtn) {
+                mateProgramsBtn.click();
+              }
+              break;
+            case 'eta-calculator':
+              // Show ETA calculator page/section
+              const etaCalculatorBtn = document.getElementById('start-eta-calculator-btn');
+              if (etaCalculatorBtn) {
+                etaCalculatorBtn.click();
+              }
+              break;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

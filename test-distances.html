@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Distances Excel</title>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+    <input type="file" id="file-input" accept=".xlsx">
+    <div id="output"></div>
+    
+    <script>
+        document.getElementById('file-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                
+                console.log('Sheet names:', workbook.SheetNames);
+                
+                workbook.SheetNames.forEach(sheetName => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, {header: 1});
+                    console.log(`Sheet ${sheetName}:`, jsonData);
+                });
+                
+                document.getElementById('output').innerHTML = '<pre>' + JSON.stringify(workbook.SheetNames, null, 2) + '</pre>';
+            };
+            reader.readAsArrayBuffer(file);
+        });
+        
+        // Auto-load the Distances.xlsx file
+        fetch('Distances.xlsx')
+            .then(response => response.arrayBuffer())
+            .then(data => {
+                const workbook = XLSX.read(new Uint8Array(data), {type: 'array'});
+                console.log('Distances.xlsx Sheet names:', workbook.SheetNames);
+                
+                workbook.SheetNames.forEach(sheetName => {
+                    const sheet = workbook.Sheets[sheetName];
+                    const jsonData = XLSX.utils.sheet_to_json(sheet, {header: 1});
+                    console.log(`Sheet ${sheetName}:`, jsonData.slice(0, 10)); // First 10 rows
+                });
+            })
+            .catch(err => console.error('Error loading Distances.xlsx:', err));
+    </script>
+</body>
+</html>

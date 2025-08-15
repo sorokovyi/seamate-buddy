@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Maritime Signal Flags</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, Arial;
+        background: #F1EFEC;
+        color: #333;
+        padding: 24px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 12px;
+      }
+
+      .card {
+        background: #F1EFEC;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover {
+        transform: scale(1.2);
+      }
+
+      .flag {
+        width: 100%;
+        height: 90px;
+        border-radius: 6px;
+        overflow: hidden;
+        background: #F1EFEC;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .flag > svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+      }
+
+      .letter {
+        font-weight: 700;
+        font-size: 18px;
+        color: #333;
+      }
+
+      .word {
+        color: #666;
+      }
+
+      .morse {
+        font-size: 12px;
+        color: #333;
+        font-family: monospace;
+        margin-left: 6px;
+        font-weight: bold;
+      }
+
+      .small {
+        font-size: 13px;
+        color: #666;
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .main-header {
+        text-center: space-y-2;
+        margin-bottom: 24px;
+      }
+
+      .header-nav {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .menu-btn {
+        position: absolute;
+        left: 0;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-btn:hover {
+        background: #1d4ed8;
+        transform: scale(1.1);
+      }
+
+      .menu-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .logo-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #333;
+        transition: transform 0.3s;
+        padding: 0 48px;
+      }
+
+      .logo-title:hover {
+        transform: scale(1.1);
+      }
+
+      .logo-title img {
+        width: clamp(32px, 5vw, 64px);
+        height: clamp(32px, 5vw, 64px);
+      }
+
+      .logo-title h1 {
+        font-size: clamp(18px, 4.5vw, 36px);
+        font-weight: 800;
+        margin: 0;
+        color: #111827;
+      }
+
+      /* Aside menu styles */
+      .aside-menu {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 50;
+        width: 256px;
+        height: 100%;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        overflow: hidden;
+      }
+
+      .aside-menu.open {
+        transform: translateX(0);
+      }
+
+      .menu-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+
+      .close-menu-btn {
+        position: absolute;
+        left: 16px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .close-menu-btn:hover {
+        background: #1d4ed8;
+        transform: scale(1.1);
+      }
+
+      .close-menu-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .menu-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+      }
+
+      .menu-nav {
+        flex: 1;
+        padding: 16px;
+      }
+
+      .menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .menu-item {
+        margin: 0;
+      }
+
+      .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: #374151;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+
+      .menu-link:hover {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+
+      .menu-link svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        font-size: clamp(14px, 3vw, 22px);
+        margin: 0;
+        text-align: center;
+      }
+
+      .print-btn {
+        background: #0b61a4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .print-btn:hover {
+        background: #094a85;
+      }
+
+      .print-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .back-btn {
+        background: #666;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .back-btn:hover {
+        background: #555;
+      }
+
+      .back-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      @media (max-width: 680px) {
+        .grid {
+          grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        }
+        
+        .header-container {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        .logo-title {
+          flex-direction: column;
+          gap: 6px;
+          padding: 0 24px;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+
+      @media print {
+        body {
+          transform: scale(0.75);
+          transform-origin: top left;
+          width: 133.33%;
+          padding: 18px;
+        }
+        
+        .print-btn,
+        .back-btn,
+        .menu-btn,
+        .subtitle,
+        .aside-menu {
+          display: none;
+        }
+        
+        .card:hover {
+          transform: none;
+        }
+        
+        .grid {
+          gap: 9px;
+        }
+        
+        .flag {
+          height: 68px;
+        }
+        
+        .header-container {
+          margin-bottom: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="header-nav">
+        <!-- Burger menu button -->
+        <button class="menu-btn" title="Open menu">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+
+        <!-- Logo and title -->
+        <a href="index.html" class="logo-title">
+          <img src="logo.png" alt="Logo" />
+          <h1>SeaMate Buddy</h1>
+        </a>
+
+
+      </div>
+      <p class="subtitle">Your best partner at sea</p>
+
+      <!-- Page specific header -->
+      <div class="header-container">
+        <h1>International Code of Signals Flags</h1>
+        <div class="button-group">
+          <a href="index.html" class="back-btn">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+            </svg>
+            Back
+          </a>
+          <button class="print-btn" onclick="window.print()">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zM5 14a1 1 0 011-1h8a1 1 0 011 1v2H5v-2z" clip-rule="evenodd"/>
+            </svg>
+            Print
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Aside menu -->
+    <aside id="aside-menu" class="aside-menu">
+      <div style="display: flex; flex-direction: column; height: 100%;">
+        <!-- Menu header with close button -->
+        <div class="menu-header">
+          <button id="close-menu" class="close-menu-btn" title="Close menu">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          <h2 class="menu-title">Menu</h2>
+        </div>
+
+        <!-- Menu items -->
+        <nav class="menu-nav">
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToPortInfo()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+                    <!-- Anchor shaft (main vertical line) -->
+                    <line x1="12" y1="6" x2="12" y2="18"></line>
+                    <!-- Anchor ring at top -->
+                    <circle cx="12" cy="4" r="2"></circle>
+                    <!-- Anchor stock (horizontal crossbar) -->
+                    <line x1="8" y1="8" x2="16" y2="8"></line>
+                    <!-- Left fluke arm -->
+                    <path d="M12 18 L8 14"></path>
+                    <!-- Right fluke arm -->
+                    <path d="M12 18 L16 14"></path>
+                    <!-- Left fluke hook -->
+                    <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                    <!-- Right fluke hook -->
+                    <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+                  </g>
+                </svg>
+                Port Info
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToMatePrograms()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Mate Programs
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToETACalculator()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                ETA Calculator
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <section id="grid" class="grid" aria-live="polite">
+        <!-- Flag cards will be generated by JavaScript -->
+      </section>
+    </main>
+
+    <script>
+      // Signal flags data
+      const SIGNALS = [
+        {
+          id: "A",
+          word: "Alfa",
+          meaning: "Diver down; keep well clear and slow",
+          extra: "Morse: .-",
+          type: "letter",
+        },
+        {
+          id: "B",
+          word: "Bravo",
+          meaning: "I am taking in, discharging, or carrying dangerous goods",
+          extra: "Morse: -...",
+          type: "letter",
+        },
+        {
+          id: "C",
+          word: "Charlie",
+          meaning: "Yes (affirmative)",
+          extra: "Morse: -.-.",
+          type: "letter",
+        },
+        {
+          id: "D",
+          word: "Delta",
+          meaning: "Keep clear of me; I am manoeuvring with difficulty",
+          extra: "Morse: -..",
+          type: "letter",
+        },
+        {
+          id: "E",
+          word: "Echo",
+          meaning: "I am altering my course to starboard",
+          extra: "Morse: .",
+          type: "letter",
+        },
+        {
+          id: "F",
+          word: "Foxtrot",
+          meaning: "I am disabled; communicate with me",
+          extra: "Morse: ..-.",
+          type: "letter",
+        },
+        {
+          id: "G",
+          word: "Golf",
+          meaning: "I require a pilot",
+          extra: "Morse: --.",
+          type: "letter",
+        },
+        {
+          id: "H",
+          word: "Hotel",
+          meaning: "I have a pilot on board",
+          extra: "Morse: ....",
+          type: "letter",
+        },
+        {
+          id: "I",
+          word: "India",
+          meaning: "I am altering my course to port",
+          extra: "Morse: ..",
+          type: "letter",
+        },
+        {
+          id: "J",
+          word: "Juliett",
+          meaning: "I am on fire and have dangerous cargo; keep well clear",
+          extra: "Morse: .---",
+          type: "letter",
+        },
+        {
+          id: "K",
+          word: "Kilo",
+          meaning: "I wish to communicate with you",
+          extra: "Morse: -.-",
+          type: "letter",
+        },
+        {
+          id: "L",
+          word: "Lima",
+          meaning: "You should stop your vessel immediately",
+          extra: "Morse: .-..",
+          type: "letter",
+        },
+        {
+          id: "M",
+          word: "Mike",
+          meaning: "My vessel is stopped and making no way through the water",
+          extra: "Morse: --",
+          type: "letter",
+        },
+        {
+          id: "N",
+          word: "November",
+          meaning: "No (negative)",
+          extra: "Morse: -.",
+          type: "letter",
+        },
+        {
+          id: "O",
+          word: "Oscar",
+          meaning: "Man overboard",
+          extra: "Morse: ---",
+          type: "letter",
+        },
+        {
+          id: "P",
+          word: "Papa",
+          meaning:
+            "In harbour: all persons should report on board as the vessel is about to proceed to sea",
+          extra: "Morse: .--.",
+          type: "letter",
+        },
+        {
+          id: "Q",
+          word: "Quebec",
+          meaning: "My vessel is healthy and I request free pratique",
+          extra: "Morse: --.-",
+          type: "letter",
+        },
+        {
+          id: "R",
+          word: "Romeo",
+          meaning: "Reserved for national use / special meanings",
+          extra: "Morse: .-.",
+          type: "letter",
+        },
+        {
+          id: "S",
+          word: "Sierra",
+          meaning: "I am operating astern propulsion",
+          extra: "Morse: ...",
+          type: "letter",
+        },
+        {
+          id: "T",
+          word: "Tango",
+          meaning: "Keep clear of me; I am engaged in pair trawling",
+          extra: "Morse: -",
+          type: "letter",
+        },
+        {
+          id: "U",
+          word: "Uniform",
+          meaning: "You are running into danger",
+          extra: "Morse: ..-",
+          type: "letter",
+        },
+        {
+          id: "V",
+          word: "Victor",
+          meaning: "I require assistance",
+          extra: "Morse: ...-",
+          type: "letter",
+        },
+        {
+          id: "W",
+          word: "Whiskey",
+          meaning: "I require medical assistance",
+          extra: "Morse: .--",
+          type: "letter",
+        },
+        {
+          id: "X",
+          word: "X-ray",
+          meaning: "Stop carrying out your intentions and watch for my signals",
+          extra: "Morse: -..-",
+          type: "letter",
+        },
+        {
+          id: "Y",
+          word: "Yankee",
+          meaning: "I am dragging my anchor",
+          extra: "Morse: -.--",
+          type: "letter",
+        },
+        {
+          id: "Z",
+          word: "Zulu",
+          meaning: "I require a tug",
+          extra: "Morse: --..",
+          type: "letter",
+        },
+      ];
+
+      // SVG flag generator
+      function flagSVGDataURI(id, w = 300, h = 200) {
+        const encode = (svg) => `data:image/svg+xml,${encodeURIComponent(svg)}`;
+
+        switch (id) {
+          case "A": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <defs>
+              <mask id="aMask">
+                <rect width="${w}" height="${h}" fill="#fff"/>
+                <polygon points="${w},0 ${w},${h} ${w - 40},${
+              h / 2
+            }" fill="#000"/>
+              </mask>
+            </defs>
+            <g mask="url(#aMask)">
+              <rect width="${w}" height="${h}" fill="#ffffff"/>
+              <rect x="${w / 2}" width="${w / 2}" height="${h}" fill="#0b61a4"/>
+            </g>
+          </svg>`;
+            return encode(svg);
+          }
+          case "B": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <defs>
+              <mask id="bMask">
+                <rect width="${w}" height="${h}" fill="#fff"/>
+                <polygon points="${w},0 ${w},${h} ${w - 40},${
+              h / 2
+            }" fill="#000"/>
+              </mask>
+            </defs>
+            <rect width="${w}" height="${h}" fill="#c62828" mask="url(#bMask)"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "C": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="40" y="0" fill="#0b61a4"/>
+            <rect width="${w}" height="40" y="40" fill="#ffffff"/>
+            <rect width="${w}" height="40" y="80" fill="#c62828"/>
+            <rect width="${w}" height="40" y="120" fill="#ffffff"/>
+            <rect width="${w}" height="40" y="160" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "D": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#f4c542"/>
+            <rect y="58" width="${w}" height="84" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "E": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="100" fill="#0b61a4"/>
+            <rect y="100" width="${w}" height="100" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "F": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#ffffff"/>
+            <polygon points="150,0 300,100 150,200 0,100" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "G": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect x="0" y="0" width="50" height="${h}" fill="#f4c542"/>
+            <rect x="50" y="0" width="50" height="${h}" fill="#0b61a4"/>
+            <rect x="100" y="0" width="50" height="${h}" fill="#f4c542"/>
+            <rect x="150" y="0" width="50" height="${h}" fill="#0b61a4"/>
+            <rect x="200" y="0" width="50" height="${h}" fill="#f4c542"/>
+            <rect x="250" y="0" width="50" height="${h}" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "H": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="150" height="${h}" fill="#ffffff"/>
+            <rect x="150" width="150" height="${h}" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "I": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#f4c542"/>
+            <circle cx="150" cy="100" r="50" fill="#000000"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "J": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect y="0" width="${w}" height="66.67" fill="#0b61a4"/>
+            <rect y="66.67" width="${w}" height="66.67" fill="#ffffff"/>
+            <rect y="133.33" width="${w}" height="66.67" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "K": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="150" height="${h}" x="0" y="0" fill="#f4c542"/>
+            <rect width="150" height="${h}" x="150" y="0" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "L": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="150" height="100" x="0" y="0" fill="#f4c542"/>
+            <rect width="150" height="100" x="150" y="0" fill="#000000"/>
+            <rect width="150" height="100" x="0" y="100" fill="#000000"/>
+            <rect width="150" height="100" x="150" y="100" fill="#f4c542"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "M": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#0b61a4"/>
+            <line x1="0" y1="0" x2="${w}" y2="${h}" stroke="#ffffff" stroke-width="40"/>
+            <line x1="${w}" y1="0" x2="0" y2="${h}" stroke="#ffffff" stroke-width="40"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "N": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect x="0" y="0" width="75" height="50" fill="#0b61a4"/>
+            <rect x="75" y="0" width="75" height="50" fill="#ffffff"/>
+            <rect x="150" y="0" width="75" height="50" fill="#0b61a4"/>
+            <rect x="225" y="0" width="75" height="50" fill="#ffffff"/>
+            <rect x="0" y="50" width="75" height="50" fill="#ffffff"/>
+            <rect x="75" y="50" width="75" height="50" fill="#0b61a4"/>
+            <rect x="150" y="50" width="75" height="50" fill="#ffffff"/>
+            <rect x="225" y="50" width="75" height="50" fill="#0b61a4"/>
+            <rect x="0" y="100" width="75" height="50" fill="#0b61a4"/>
+            <rect x="75" y="100" width="75" height="50" fill="#ffffff"/>
+            <rect x="150" y="100" width="75" height="50" fill="#0b61a4"/>
+            <rect x="225" y="100" width="75" height="50" fill="#ffffff"/>
+            <rect x="0" y="150" width="75" height="50" fill="#ffffff"/>
+            <rect x="75" y="150" width="75" height="50" fill="#0b61a4"/>
+            <rect x="150" y="150" width="75" height="50" fill="#ffffff"/>
+            <rect x="225" y="150" width="75" height="50" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "O": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <polygon points="0,0 ${w},0 ${w},${h}" fill="#c62828"/>
+            <polygon points="0,0 0,${h} ${w},${h}" fill="#f4c542"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "P": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#0b61a4"/>
+            <rect x="90" y="40" width="120" height="120" fill="#ffffff"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "Q": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#f4c542"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "R": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#c62828"/>
+            <rect x="120" width="60" height="${h}" fill="#f4c542"/>
+            <rect y="70" width="${w}" height="60" fill="#f4c542"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "S": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#ffffff"/>
+            <rect x="90" y="40" width="120" height="120" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "T": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect x="0" width="100" height="${h}" fill="#c62828"/>
+            <rect x="100" width="100" height="${h}" fill="#ffffff"/>
+            <rect x="200" width="100" height="${h}" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "U": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect x="0" y="0" width="150" height="100" fill="#c62828"/>
+            <rect x="150" y="0" width="150" height="100" fill="#ffffff"/>
+            <rect x="0" y="100" width="150" height="100" fill="#ffffff"/>
+            <rect x="150" y="100" width="150" height="100" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "V": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#ffffff"/>
+            <line x1="0" y1="0" x2="${w}" y2="${h}" stroke="#c62828" stroke-width="30"/>
+            <line x1="${w}" y1="0" x2="0" y2="${h}" stroke="#c62828" stroke-width="30"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "W": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#0b61a4"/>
+            <rect x="66" y="44" width="168" height="112" fill="#ffffff"/>
+            <rect x="111" y="74" width="78" height="52" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "X": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#ffffff"/>
+            <rect x="120" y="0" width="60" height="${h}" fill="#0b61a4"/>
+            <rect x="0" y="70" width="${w}" height="60" fill="#0b61a4"/>
+          </svg>`;
+            return encode(svg);
+          }
+          case "Y": {
+            let parts = "";
+            const stripe = Math.ceil(w / 6);
+            for (let i = -2 * h; i < w + 2 * h; i += stripe) {
+              const isYellow = Math.floor(i / stripe) % 2 === 0;
+              parts += `<polygon points='${i},0 ${i + stripe},0 ${
+                i + stripe - h
+              },${h} ${i - h},${h}' fill='${
+                isYellow ? "#f4c542" : "#c62828"
+              }'/>`;
+            }
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">${parts}</svg>`;
+            return encode(svg);
+          }
+          case "Z": {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <polygon points="0,0 ${w},0 ${w / 2},${h / 2}" fill="#f4c542"/>
+            <polygon points="0,0 ${w / 2},${h / 2} 0,${h}" fill="#000000"/>
+            <polygon points="${w},0 ${w},${h} ${w / 2},${
+              h / 2
+            }" fill="#0b61a4"/>
+            <polygon points="0,${h} ${w},${h} ${w / 2},${
+              h / 2
+            }" fill="#c62828"/>
+          </svg>`;
+            return encode(svg);
+          }
+          default: {
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}">
+            <rect width="${w}" height="${h}" fill="#cccccc"/>
+            <text x="150" y="120" font-size="90" text-anchor="middle" fill="#222">${id}</text>
+          </svg>`;
+            return encode(svg);
+          }
+        }
+      }
+
+      // UI functions
+      const grid = document.getElementById("grid");
+
+      function render(list) {
+        grid.innerHTML = "";
+        const frag = document.createDocumentFragment();
+
+        list.forEach((s) => {
+          const imgURI = flagSVGDataURI(s.id);
+          const svgMarkup = (() => {
+            try {
+              return decodeURIComponent(imgURI.split(",")[1]);
+            } catch (e) {
+              return "";
+            }
+          })();
+
+          const btn = document.createElement("button");
+          btn.className = "card";
+          btn.type = "button";
+          btn.innerHTML = `
+          <div class='flag'>${svgMarkup}</div>
+          <div class='meta'>
+            <div>
+              <div class='letter'>${s.id}</div>
+              <div class='word'>${
+                s.word
+              } <span class='morse'><br>${s.extra.replace(
+            "Morse: ",
+            ""
+          )}</span></div>
+            </div>
+            <div class='small'>${s.meaning.split(".")[0]}</div>
+          </div>
+        `;
+
+          frag.appendChild(btn);
+        });
+
+        grid.appendChild(frag);
+      }
+
+      // Initial render
+      render(SIGNALS);
+
+      // Menu functionality
+      const menuBtn = document.querySelector('.menu-btn');
+      const closeMenuBtn = document.getElementById('close-menu');
+      const asideMenu = document.getElementById('aside-menu');
+
+      function openMenu() {
+        asideMenu.classList.add('open');
+      }
+
+      function closeMenu() {
+        asideMenu.classList.remove('open');
+      }
+
+      menuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (asideMenu.classList.contains('open') && 
+            !asideMenu.contains(e.target) && 
+            !menuBtn.contains(e.target)) {
+          closeMenu();
+        }
+      });
+
+      // Navigation functions
+      function navigateToPortInfo() {
+        // Store navigation intent in sessionStorage
+        sessionStorage.setItem('navigateTo', 'port-info');
+        window.location.href = 'index.html';
+      }
+
+      function navigateToMatePrograms() {
+        // Store navigation intent in sessionStorage
+        sessionStorage.setItem('navigateTo', 'mate-programs');
+        window.location.href = 'index.html';
+      }
+
+      function navigateToETACalculator() {
+        // Store navigation intent in sessionStorage
+        sessionStorage.setItem('navigateTo', 'eta-calculator');
+        window.location.href = 'index.html';
+      }
+    </script>
+  </body>
+</html>

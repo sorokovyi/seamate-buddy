@@ -9,14 +9,15 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
-    <!-- Main application container -->
-    <div
-      class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto space-y-6 md:p-10 relative overflow-hidden"
-    >
+  <body class="bg-gray-100 min-h-screen p-4 flex flex-col">
+    <div class="flex-1 flex items-center justify-center">
+      <!-- Main application container -->
+      <div
+        class="bg-white pt-4 px-6 pb-6 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto md:pt-6 md:px-10 md:pb-10 relative overflow-hidden"
+      >
       <!-- Header section -->
-      <header class="text-center space-y-2">
-        <div class="relative flex items-center justify-center mb-4">
+      <header class="text-center">
+        <div class="relative flex items-center justify-center mb-2">
           <!-- Burger menu button - absolute positioned left -->
           <button
             id="menu-btn"
@@ -73,7 +74,7 @@
             </svg>
           </button>
         </div>
-        <p class="text-gray-600 text-lg">Your best partner at sea</p>
+        <p class="text-gray-600 text-lg mb-4">Your best partner at sea</p>
       </header>
 
       <!-- Search modal (hidden by default) -->
@@ -123,21 +124,24 @@
         </div>
       </div>
 
+      <!-- Menu overlay -->
+      <div id="menu-overlay" class="absolute inset-0 bg-black bg-opacity-50 z-40 opacity-0 invisible transition-all duration-300 ease-in-out rounded-3xl"></div>
+
       <!-- Aside menu (hidden by default) -->
       <aside
         id="aside-menu"
         class="absolute top-0 left-0 z-50 w-64 h-full bg-white rounded-3xl shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out overflow-hidden"
       >
-        <div class="flex flex-col h-full">
+        <div class="flex flex-col h-full" style="padding-left: 20px; padding-right: 20px;">
           <!-- Menu header with close button positioned exactly like burger menu -->
           <div
-            class="relative flex items-center justify-center p-4 border-b border-gray-200"
-            style="padding-top: 1.5rem; padding-bottom: 1.5rem"
+            class="relative border-b border-gray-200"
+            style="padding-top: 1rem; padding-bottom: 1.5rem;"
           >
             <!-- Close button positioned exactly like burger menu button -->
             <button
               id="close-menu"
-              class="absolute left-4 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0"
+              class="absolute top-4 left-0 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 hover:scale-110 flex-shrink-0"
               title="Close menu"
             >
               <svg
@@ -155,7 +159,9 @@
               </svg>
             </button>
             <!-- Centered menu title -->
-            <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
+            <div class="flex items-center justify-center pt-4 pb-2">
+              <h2 class="text-lg font-semibold text-gray-900">Menu</h2>
+            </div>
           </div>
 
           <!-- Menu items -->
@@ -248,7 +254,7 @@
       </aside>
 
       <!-- Start Page (default view) -->
-      <div id="start-page" class="text-center space-y-8">
+      <div id="start-page" class="text-center space-y-8 mt-6">
         <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
           Please choose service
         </h2>
@@ -349,7 +355,7 @@
       </div>
 
       <!-- ETA Calculator Page (hidden by default) -->
-      <div id="eta-calculator-page" class="hidden">
+      <div id="eta-calculator-page" class="hidden mt-6">
         <div class="space-y-6">
           <!-- Page Header -->
           <div class="text-center mb-6">
@@ -379,7 +385,7 @@
       </div>
 
       <!-- Mate Programs Page (hidden by default) -->
-      <div id="gyro-calculator-page" class="hidden">
+      <div id="gyro-calculator-page" class="hidden mt-6">
         <div class="space-y-6">
           <!-- Page Header -->
           <div class="text-center mb-6">
@@ -437,7 +443,7 @@
       </div>
 
       <!-- Port Info Page (hidden by default) -->
-      <div id="port-info-page" class="hidden">
+      <div id="port-info-page" class="hidden mt-6">
         <!-- Dropdowns container -->
         <div class="flex flex-col md:flex-row gap-4">
           <!-- Country dropdown -->
@@ -479,7 +485,67 @@
           </p>
         </div>
       </div>
+      </div>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-white p-6 rounded-3xl shadow-2xl w-full max-w-4xl mx-auto mb-4 mt-6 md:p-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-6">
+        
+        <!-- Copyright Section -->
+        <div class="text-center md:text-left">
+          <p class="text-gray-600 text-sm font-medium">© 2025 Made by Sorokovyi</p>
+        </div>
+        
+        <!-- Contact Section -->
+        <div class="flex items-center gap-2 text-center md:text-left">
+          <svg class="w-4 h-4 text-gray-600 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+          </svg>
+          <span class="text-gray-600 text-sm font-medium">Contact me:</span>
+          <a href="mailto:vlad.sorokovoi@gmail.com" class="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors duration-200 hover:underline">
+            vlad.sorokovoi@gmail.com
+          </a>
+        </div>
+        
+        <!-- Support Section -->
+        <div class="flex items-center gap-3">
+          <span class="text-gray-600 text-sm font-medium">Support project:</span>
+          <div class="flex items-center gap-2">
+            
+            <!-- GitHub Link -->
+            <a href="https://github.com/sorokovyi" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-110 group"
+               title="GitHub">
+              <img src="github-logo.png" alt="GitHub" class="w-5 h-5 opacity-80 group-hover:opacity-100">
+            </a>
+            
+            <!-- PayPal Link -->
+            <a href="https://paypal.me/sorokovyi" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center justify-center w-8 h-8 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-200 hover:scale-110 group"
+               title="PayPal">
+              <img src="PayPal_Logo.png" alt="PayPal" class="w-5 h-5 opacity-80 group-hover:opacity-100">
+            </a>
+            
+            <!-- Monobank Link -->
+            <a href="http://send.monobank.ua/5RKJGpoC2M" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center justify-center w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 hover:scale-110 group"
+               title="Monobank">
+              <img src="monobank-logo.png" alt="Monobank" class="w-5 h-5 opacity-80 group-hover:opacity-100">
+            </a>
+            
+          </div>
+        </div>
+        
+      </div>
+    </footer>
 
     <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <!-- <input type="file" id="xlsx-input" class="mb-4 block" accept=".xlsx" /> -->
@@ -487,9 +553,10 @@
     
     <!-- Navigation handler for flags_ABC.html menu -->
     <script>
-      // Handle navigation from flags_ABC.html menu
-      window.addEventListener('load', () => {
-        const navigateTo = sessionStorage.getItem('navigateTo');
+      // Handle navigation from flags_ABC.html menu and hash-based navigation
+      function handleNavigation() {
+        const navigateTo = sessionStorage.getItem('navigateTo') || window.location.hash.substring(1);
+        
         if (navigateTo) {
           sessionStorage.removeItem('navigateTo'); // Clear the intent
           
@@ -517,8 +584,19 @@
               }
               break;
           }
+          
+          // Clear the hash from URL
+          if (window.location.hash) {
+            history.replaceState(null, null, window.location.pathname);
+          }
         }
-      });
+      }
+
+      // Handle navigation on page load
+      window.addEventListener('load', handleNavigation);
+      
+      // Handle navigation when hash changes (for direct links)
+      window.addEventListener('hashchange', handleNavigation);
     </script>
   </body>
 </html>

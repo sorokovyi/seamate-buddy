@@ -366,6 +366,7 @@
   const menuBtn = document.getElementById("menu-btn");
   const asideMenu = document.getElementById("aside-menu");
   const closeMenu = document.getElementById("close-menu");
+  const menuOverlay = document.getElementById("menu-overlay");
 
   // Search functionality
   const searchBtn = document.getElementById("search-btn");
@@ -377,14 +378,28 @@
   // Open menu
   menuBtn.addEventListener("click", () => {
     asideMenu.classList.remove("-translate-x-full");
+    menuOverlay.classList.remove("opacity-0", "invisible");
+    menuOverlay.classList.add("opacity-100", "visible");
   });
 
   // Close menu
   const closeMenuHandler = () => {
     asideMenu.classList.add("-translate-x-full");
+    menuOverlay.classList.remove("opacity-100", "visible");
+    menuOverlay.classList.add("opacity-0", "invisible");
   };
 
   closeMenu.addEventListener("click", closeMenuHandler);
+  
+  // Close menu when clicking on overlay
+  menuOverlay.addEventListener("click", closeMenuHandler);
+
+  // Close menu when pressing Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !asideMenu.classList.contains("-translate-x-full")) {
+      closeMenuHandler();
+    }
+  });
 
   // Menu item handlers
   document.getElementById("port-info-link").addEventListener("click", (e) => {

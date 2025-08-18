@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MF/HF Test Stations - SeaMate Buddy</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, Arial;
+        background: #F1EFEC;
+        color: #333;
+        padding: 24px;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 16px 8px;
+        }
+      }
+
+      .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .main-header {
+        text-center: space-y-2;
+        margin-bottom: 24px;
+      }
+
+      .header-nav {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+      }
+
+      .menu-btn {
+        position: absolute;
+        left: 0;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .menu-btn:hover {
+        background: #1d4ed8;
+        transform: scale(1.1);
+      }
+
+      .menu-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .logo-title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #333;
+        transition: transform 0.3s;
+        padding: 0 48px;
+      }
+
+      .logo-title:hover {
+        transform: scale(1.1);
+      }
+
+      .logo-title img {
+        width: clamp(32px, 5vw, 64px);
+        height: clamp(32px, 5vw, 64px);
+      }
+
+      .logo-title h1 {
+        font-size: clamp(18px, 4.5vw, 36px);
+        font-weight: 800;
+        margin: 0;
+        color: #111827;
+      }
+
+      /* Menu overlay */
+      .menu-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+      }
+
+      .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Aside menu styles */
+      .aside-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 50;
+        width: 256px;
+        height: 100%;
+        background: white;
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        overflow: hidden;
+      }
+
+      .aside-menu.open {
+        transform: translateX(0);
+      }
+
+      .menu-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        border-bottom: 1px solid #e5e7eb;
+        padding-top: 24px;
+        padding-bottom: 24px;
+      }
+
+      .close-menu-btn {
+        position: absolute;
+        left: 16px;
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .close-menu-btn:hover {
+        background: #1d4ed8;
+        transform: scale(1.1);
+      }
+
+      .close-menu-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .menu-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #111827;
+        margin: 0;
+      }
+
+      .menu-nav {
+        flex: 1;
+        padding: 16px;
+      }
+
+      .menu-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .menu-item {
+        margin: 0;
+      }
+
+      .menu-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: #374151;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+
+      .menu-link:hover {
+        background: #dbeafe;
+        color: #2563eb;
+      }
+
+      .menu-link svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        font-size: clamp(14px, 3vw, 22px);
+        margin: 0;
+        text-align: center;
+      }
+
+      .print-btn {
+        background: #0b61a4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .print-btn:hover {
+        background: #094a85;
+      }
+
+      .print-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .back-btn {
+        background: #666;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+      }
+
+      .back-btn:hover {
+        background: #555;
+      }
+
+      .back-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      /* Content sections */
+      .content-section {
+        background: #F1EFEC;
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 16px;
+        text-align: center;
+      }
+
+      .image-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .station-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Table styles */
+      .station-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      }
+
+      .station-table th,
+      .station-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .station-table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        color: #111827;
+        font-size: 14px;
+      }
+
+      .station-table td {
+        font-size: 14px;
+        color: #374151;
+      }
+
+      .station-table tr:nth-child(even) {
+        background-color: #f9fafb;
+      }
+
+      .station-table tr:hover {
+        background-color: #f3f4f6;
+      }
+
+      .station-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Footer styles */
+      .footer {
+        background: #F1EFEC;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        margin-top: 32px;
+        padding: 20px 24px;
+      }
+
+      @media (max-width: 768px) {
+        .footer {
+          margin-top: 24px;
+          margin-left: 8px;
+          margin-right: 8px;
+        }
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .footer-section {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .copyright {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+        font-weight: 500;
+      }
+
+      .contact-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .contact-icon {
+        width: 16px;
+        height: 16px;
+        color: #666;
+      }
+
+      .email-link {
+        color: #0b61a4;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .email-link:hover {
+        color: #094a85;
+        text-decoration: underline;
+      }
+
+      .support-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .support-text {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .support-links {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .support-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .support-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+
+      .support-logo {
+        width: 20px;
+        height: 20px;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+
+      .support-link:hover .support-logo {
+        opacity: 1;
+      }
+
+      @media (max-width: 680px) {
+        .header-container {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        .logo-title {
+          flex-direction: column;
+          gap: 6px;
+          padding: 0 24px;
+        }
+
+        .button-group {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+          gap: 12px;
+        }
+
+        .footer-section {
+          justify-content: center;
+        }
+
+        .contact-item {
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+
+        .station-table {
+          font-size: 12px;
+        }
+
+        .station-table th,
+        .station-table td {
+          padding: 8px;
+        }
+      }
+
+      @media print {
+        /* Force white background for print */
+        body {
+          background: white !important;
+          background-image: none !important;
+          color: black !important;
+          padding: 0;
+          margin: 0;
+        }
+        
+        /* Hide interactive elements */
+        .print-btn,
+        .back-btn,
+        .menu-btn,
+        .subtitle,
+        .aside-menu,
+        .header-nav,
+        .footer {
+          display: none !important;
+        }
+        
+        /* Page break control */
+        @page {
+          size: A4;
+          margin: 1.5cm;
+        }
+        
+        /* Main header for print */
+        .main-header {
+          margin-bottom: 20px;
+        }
+        
+        .main-header h1 {
+          font-size: 24px;
+          margin: 0;
+          text-align: center;
+          color: black !important;
+        }
+        
+        /* Map section - First page */
+        .content-section:first-of-type {
+          background: white !important;
+          border: none !important;
+          padding: 0;
+          margin: 0;
+          page-break-after: always;
+          page-break-inside: avoid;
+        }
+        
+        .content-section:first-of-type .section-title {
+          font-size: 20px;
+          margin-bottom: 15px;
+          text-align: center;
+          color: black !important;
+        }
+        
+        .content-section:first-of-type .image-container {
+          display: flex;
+          justify-content: center;
+          margin: 0;
+        }
+        
+        .content-section:first-of-type .station-image {
+          max-width: 100%;
+          height: auto;
+          border: 1px solid #ddd;
+        }
+        
+        /* Table section - Second page */
+        .content-section:last-of-type {
+          background: white !important;
+          border: none !important;
+          padding: 0;
+          margin: 0;
+          page-break-before: always;
+          page-break-inside: avoid;
+        }
+        
+        .content-section:last-of-type .section-title {
+          font-size: 20px;
+          margin-bottom: 15px;
+          text-align: center;
+          color: black !important;
+        }
+        
+        .station-table {
+          background: white !important;
+          border: 1px solid #ddd;
+          width: 100%;
+          font-size: 10px;
+        }
+        
+        .station-table th {
+          background: #f8f9fa !important;
+          color: black !important;
+          font-weight: bold;
+          padding: 8px;
+          border: 1px solid #ddd;
+        }
+        
+        .station-table td {
+          color: black !important;
+          padding: 6px 8px;
+          border: 1px solid #ddd;
+        }
+        
+        .station-table tr:nth-child(even) {
+          background: #f9f9f9 !important;
+        }
+        
+        /* Ensure all text is black */
+        .section-title,
+        .station-table th,
+        .station-table td {
+          color: black !important;
+        }
+        
+        /* Prevent orphaned content */
+        .content-section {
+          break-inside: avoid;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="header-nav">
+        <!-- Burger menu button -->
+        <button class="menu-btn" title="Open menu">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+
+        <!-- Logo and title -->
+        <a href="index.html" class="logo-title">
+          <img src="logo.png" alt="Logo" />
+          <h1>SeaMate Buddy</h1>
+        </a>
+      </div>
+      <p class="subtitle">Your best partner at sea</p>
+
+      <!-- Page specific header -->
+      <div class="header-container">
+        <h1>MF/HF Test Stations</h1>
+        <div class="button-group">
+          <a href="index.html" class="back-btn">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+            </svg>
+            Back
+          </a>
+          <button class="print-btn" onclick="window.print()">
+            <svg fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zM5 14a1 1 0 011-1h8a1 1 0 011 1v2H5v-2z" clip-rule="evenodd"/>
+            </svg>
+            Print
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Menu overlay -->
+    <div id="menu-overlay" class="menu-overlay"></div>
+
+    <!-- Aside menu -->
+    <aside id="aside-menu" class="aside-menu">
+      <div style="display: flex; flex-direction: column; height: 100%;">
+        <!-- Menu header with close button -->
+        <div class="menu-header">
+          <button id="close-menu" class="close-menu-btn" title="Close menu">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+          <h2 class="menu-title">Menu</h2>
+        </div>
+
+        <!-- Menu items -->
+        <nav class="menu-nav">
+          <ul class="menu-list">
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToPortInfo()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+                    <!-- Anchor shaft (main vertical line) -->
+                    <line x1="12" y1="6" x2="12" y2="18"></line>
+                    <!-- Anchor ring at top -->
+                    <circle cx="12" cy="4" r="2"></circle>
+                    <!-- Anchor stock (horizontal crossbar) -->
+                    <line x1="8" y1="8" x2="16" y2="8"></line>
+                    <!-- Left fluke arm -->
+                    <path d="M12 18 L8 14"></path>
+                    <!-- Right fluke arm -->
+                    <path d="M12 18 L16 14"></path>
+                    <!-- Left fluke hook -->
+                    <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                    <!-- Right fluke hook -->
+                    <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+                  </g>
+                </svg>
+                Port Info
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToMatePrograms()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                </svg>
+                Mate Programs
+              </a>
+            </li>
+            <li class="menu-item">
+              <a href="javascript:void(0)" onclick="navigateToETACalculator()" class="menu-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                ETA Calculator
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+
+    <main>
+      <!-- Test Stations Map Section -->
+      <section class="content-section">
+        <h2 class="section-title">Test Stations Map</h2>
+        <div class="image-container">
+          <img src="mfhf-test-stations.jpg" alt="MF/HF Test Stations Map" class="station-image">
+        </div>
+      </section>
+
+      <!-- Test Stations Table Section -->
+      <section class="content-section">
+        <h2 class="section-title">Coast Stations Information</h2>
+        <table class="station-table">
+          <thead>
+            <tr>
+              <th>Station</th>
+              <th>MMSI</th>
+              <th>Frequency</th>
+              <th>Region</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Qatar Doha Radio</td>
+              <td>004661010</td>
+              <td>2Mhz</td>
+              <td>Persian gulf</td>
+            </tr>
+            <tr>
+              <td>Humber</td>
+              <td>002320007</td>
+              <td>2Mhz</td>
+              <td>North / Baltic Seas</td>
+            </tr>
+            <tr>
+              <td>Aberdeen</td>
+              <td>002320004</td>
+              <td>2Mhz</td>
+              <td>North / Baltic Seas</td>
+            </tr>
+            <tr>
+              <td>Lyngby</td>
+              <td>002191000</td>
+              <td>2Mhz</td>
+              <td>North / Baltic Seas</td>
+            </tr>
+            <tr>
+              <td>Taganrog Radio</td>
+              <td>002734487</td>
+              <td>2Mhz</td>
+              <td>Black Sea</td>
+            </tr>
+            <tr>
+              <td>Olympia Radio</td>
+              <td>002371000</td>
+              <td>Any</td>
+              <td>Med. Sea</td>
+            </tr>
+            <tr>
+              <td>Istanbul Radio</td>
+              <td>002711000</td>
+              <td>16Mhz / 12Mhz</td>
+              <td>Black Sea</td>
+            </tr>
+            <tr>
+              <td>Ho Chi Minh-Ville</td>
+              <td>005741993</td>
+              <td>16Mhz / 12Mhz</td>
+              <td>Vietnam</td>
+            </tr>
+            <tr>
+              <td>Hong Kong</td>
+              <td>004773500</td>
+              <td>-</td>
+              <td>Hong Kong</td>
+            </tr>
+            <tr>
+              <td>Shanghai</td>
+              <td>004122100</td>
+              <td>Any</td>
+              <td>China</td>
+            </tr>
+            <tr>
+              <td>Solent MRCC</td>
+              <td>002320011</td>
+              <td>2Mhz</td>
+              <td>UK</td>
+            </tr>
+            <tr>
+              <td>Falmouth MRCC</td>
+              <td>002320014</td>
+              <td>2Mhz</td>
+              <td>UK</td>
+            </tr>
+            <tr>
+              <td>Griz-Nez</td>
+              <td>002275100</td>
+              <td>2Mhz</td>
+              <td>UK</td>
+            </tr>
+            <tr>
+              <td>Jobourg MRCC</td>
+              <td>002275200</td>
+              <td>2Mhz</td>
+              <td>UK</td>
+            </tr>
+            <tr>
+              <td>Boston MA</td>
+              <td>003669991</td>
+              <td>8Mhz</td>
+              <td>Caribbean Sea / East coat of USA</td>
+            </tr>
+            <tr>
+              <td>Iqaluit</td>
+              <td>003160023</td>
+              <td>16Mhz</td>
+              <td>E coat of Canada</td>
+            </tr>
+            <tr>
+              <td>Curacao</td>
+              <td>003061000</td>
+              <td>-</td>
+              <td>Caribbean Sea</td>
+            </tr>
+            <tr>
+              <td>Tenerife</td>
+              <td>002241007</td>
+              <td>-</td>
+              <td>Africa NW coast</td>
+            </tr>
+            <tr>
+              <td>Madrid</td>
+              <td>002241008</td>
+              <td>8Mhz</td>
+              <td>Med. Sea</td>
+            </tr>
+            <tr>
+              <td>Cape Town</td>
+              <td>006010001</td>
+              <td>-</td>
+              <td>South Africa</td>
+            </tr>
+            <tr>
+              <td>Wiluna</td>
+              <td>005030001</td>
+              <td>-</td>
+              <td>Australia / Indian Ocean</td>
+            </tr>
+            <tr>
+              <td>Coruna</td>
+              <td>002240992</td>
+              <td>-</td>
+              <td>Biscay</td>
+            </tr>
+            <tr>
+              <td>Bangkok</td>
+              <td>005671000</td>
+              <td>8Mhz</td>
+              <td>Thailand</td>
+            </tr>
+            <tr>
+              <td>Palermo</td>
+              <td>002470002</td>
+              <td>4Mhz</td>
+              <td>Med. Sea</td>
+            </tr>
+            <tr>
+              <td>New Orleans</td>
+              <td>003669908</td>
+              <td>-</td>
+              <td>USA</td>
+            </tr>
+            <tr>
+              <td>Point Reyes</td>
+              <td>003669990</td>
+              <td>4Mhz</td>
+              <td>USA west coast</td>
+            </tr>
+            <tr>
+              <td>Dalian</td>
+              <td>004121300</td>
+              <td>2 / 4 MHz</td>
+              <td>China</td>
+            </tr>
+            <tr>
+              <td>Manaus</td>
+              <td>007100003</td>
+              <td>12 MHz</td>
+              <td>South America / Brazil</td>
+            </tr>
+            <tr>
+              <td>Valparaiso</td>
+              <td>007251860</td>
+              <td>12Mhz</td>
+              <td>South America / Chile</td>
+            </tr>
+            <tr>
+              <td>Mobile</td>
+              <td>003660030</td>
+              <td>-</td>
+              <td>USA</td>
+            </tr>
+            <tr>
+              <td>Hai phong</td>
+              <td>005741996</td>
+              <td>-</td>
+              <td>Vietnam</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <p class="copyright">© 2025 Made by Sorokovyi</p>
+        </div>
+        
+        <div class="footer-section">
+          <div class="contact-info">
+            <div class="contact-item">
+              <svg class="contact-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+              </svg>
+              <span>Contact me: </span>
+              <a href="mailto:vlad.sorokovoi@gmail.com" class="email-link">vlad.sorokovoi@gmail.com</a>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-section">
+          <div class="support-info">
+            <span class="support-text">Support project:</span>
+            <div class="support-links">
+              <a href="https://github.com/sorokovyi" class="support-link" title="GitHub" target="_blank" rel="noopener">
+                <img src="github-logo.png" alt="GitHub" class="support-logo">
+              </a>
+              <a href="https://paypal.me/sorokovyi" class="support-link" title="PayPal" target="_blank" rel="noopener">
+                <img src="PayPal_Logo.png" alt="PayPal" class="support-logo">
+              </a>
+              <a href="http://send.monobank.ua/5RKJGpoC2M" class="support-link" title="Monobank" target="_blank" rel="noopener">
+                <img src="monobank-logo.png" alt="Monobank" class="support-logo">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Menu functionality
+      const menuBtn = document.querySelector('.menu-btn');
+      const closeMenuBtn = document.getElementById('close-menu');
+      const asideMenu = document.getElementById('aside-menu');
+      const menuOverlay = document.getElementById('menu-overlay');
+
+      function openMenu() {
+        asideMenu.classList.add('open');
+        menuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+      }
+
+      function closeMenu() {
+        asideMenu.classList.remove('open');
+        menuOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+      }
+
+      menuBtn.addEventListener('click', openMenu);
+      closeMenuBtn.addEventListener('click', closeMenu);
+      
+      // Close menu when clicking on overlay
+      menuOverlay.addEventListener('click', closeMenu);
+
+      // Close menu when pressing Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && asideMenu.classList.contains('open')) {
+          closeMenu();
+        }
+      });
+
+      // Navigation functions
+      function navigateToPortInfo() {
+        // Direct navigation to index.html with port-info section
+        sessionStorage.setItem('navigateTo', 'port-info');
+        window.location.href = 'index.html#port-info';
+      }
+
+      function navigateToMatePrograms() {
+        // Direct navigation to index.html with mate-programs section
+        sessionStorage.setItem('navigateTo', 'mate-programs');
+        window.location.href = 'index.html#mate-programs';
+      }
+
+      function navigateToETACalculator() {
+        // Direct navigation to index.html with eta-calculator section
+        sessionStorage.setItem('navigateTo', 'eta-calculator');
+        window.location.href = 'index.html#eta-calculator';
+      }
+    </script>
+  </body>
+</html>

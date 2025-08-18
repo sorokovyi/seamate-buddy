@@ -94,6 +94,198 @@
     return result;
   }
 
+  // Get flag filename for country name
+  function getFlagFilename(countryName) {
+    if (!countryName) return null;
+
+    // Clean country name - remove content in parentheses and common abbreviations
+    let cleanCountryName = countryName
+      .replace(/\([^)]*\)/g, '')  // Remove anything in parentheses
+      .replace(/\s*,.*$/g, '')    // Remove comma and everything after
+      .replace(/\bRep\.\s*of\s*/gi, 'Republic of ')  // Expand "Rep. of" to "Republic of"
+      .replace(/\bDem\.\s*Rep\.\s*/gi, 'Democratic Republic ')  // Expand "Dem. Rep." to "Democratic Republic"
+      .replace(/\bSt\.\s*/gi, 'Saint ')  // Expand "St." to "Saint"
+      .replace(/\bU\.S\.\s*/gi, 'United States ')  // Expand "U.S." to "United States"
+      .replace(/\bU\.K\.\s*/gi, 'United Kingdom ')  // Expand "U.K." to "United Kingdom"
+      .replace(/\bU\.A\.E\.\s*/gi, 'United Arab Emirates ')  // Expand "U.A.E." to "United Arab Emirates"
+      .trim();
+
+    // Map country names to flag filenames
+    const countryFlagMap = {
+      // Common mappings
+      "United States": "united-states",
+      "United States of America": "united-states",
+      "USA": "united-states",
+      "United Kingdom": "united-kingdom",
+      "UK": "united-kingdom",
+      "Great Britain": "united-kingdom",
+      "Britain": "united-kingdom",
+      "Alderney": "united-kingdom",
+      "Guernsey": "guernsey",
+      "Jersey": "jersey",
+      "South Korea": "south-korea",
+      "North Korea": "north-korea",
+      "South Africa": "south-africa",
+      "New Zealand": "new-zealand",
+      "Saudi Arabia": "saudi-arabia",
+      "United Arab Emirates": "uae",
+      "UAE": "uae",
+      "Czech Republic": "czech-republic",
+      "Czechia": "czech-republic",
+      "Dominican Republic": "dominican-republic",
+      "Central African Republic": "central-african-republic",
+      "Sri Lanka": "sri-lanka",
+      "Papua New Guinea": "papua-new-guinea",
+      "Trinidad and Tobago": "trinidad-and-tobago",
+      "Bosnia and Herzegovina": "bosnia",
+      "Bosnia": "bosnia",
+      "Côte d'Ivoire": "ivory-coast",
+      "Ivory Coast": "ivory-coast",
+      "Marshall Islands": "marshall-islands",
+      "Solomon Islands": "solomon-islands",
+      "Cayman Islands": "cayman-islands",
+      "Virgin Islands": "virgin-islands",
+      "Cook Islands": "cook-islands",
+      "Faroe Islands": "faroe-islands",
+      "Falkland Islands": "falkland-islands",
+      "Turks and Caicos Islands": "turks-and-caicos-islands",
+      "Northern Mariana Islands": "northern-mariana-islands",
+      "British Virgin Islands": "british-virgin-islands",
+      "American Samoa": "american-samoa",
+      "French Polynesia": "french-polynesia",
+      "New Caledonia": "new-caledonia",
+      "Wallis and Futuna": "wallis-and-futuna",
+      "French Guiana": "french-guiana",
+      "Saint Kitts and Nevis": "saint-kitts-and-nevis",
+      "Saint Vincent and the Grenadines": "saint-vincent",
+      "Saint Lucia": "saint-lucia",
+      "Saint Pierre and Miquelon": "saint-pierre-and-miquelon",
+      "Saint Helena": "saint-helena",
+      "Saint Barthélemy": "saint-barthelemy",
+      "Saint Martin": "saint-martin",
+      "Sint Maarten": "sint-maarten",
+      "Antigua and Barbuda": "antigua-and-barbuda",
+      "São Tomé and Príncipe": "sao-tome-and-principe",
+      "Burkina Faso": "burkina-faso",
+      "Cape Verde": "cape-verde",
+      "Guinea-Bissau": "guinea-bissau",
+      "Equatorial Guinea": "equatorial-guinea",
+      "Sierra Leone": "sierra-leone",
+      "Congo": "congo-brazzaville",
+      "Republic of Congo": "congo-brazzaville",
+      "Congo Republic": "congo-brazzaville",
+      "Democratic Republic of Congo": "congo-kinshasa",
+      "Democratic Republic of the Congo": "congo-kinshasa",
+      "DRC": "congo-kinshasa",
+      "DR Congo": "congo-kinshasa",
+      "East Timor": "east-timor",
+      "Timor-Leste": "east-timor",
+      "El Salvador": "el-salvador",
+      "Costa Rica": "costa-rica",
+      "Puerto Rico": "puerto-rico",
+      "Vatican City": "vatican-city",
+      "Vatican": "vatican-city",
+      "San Marino": "san-marino",
+      "Isle of Man": "isle-of-man",
+      "Hong Kong": "hong-kong",
+      "Macau": "macau",
+      "Macao": "macau",
+      "Western Sahara": "western-sahara",
+      "South Sudan": "south-sudan",
+      "French Southern and Antarctic Lands": "french-southern-and-antarctic-lands",
+      "British Indian Ocean Territory": "british-indian-ocean-territory",
+      "Heard Island and McDonald Islands": "heard-island-and-macdonald-islands",
+      "South Georgia and the South Sandwich Islands": "south-georgia-and-the-south-sandwich-islands",
+      "Norfolk Island": "norfolk-island",
+      "Christmas Island": "christmas-island",
+      "Cocos Islands": "cocos-keeling-islands",
+      "Cocos Keeling Islands": "cocos-keeling-islands",
+      "Bouvet Island": "bouvet-island",
+      "Jan Mayen": "jan-mayen",
+      "Svalbard": "svalbard",
+      "Wake Island": "wake-island",
+      "Navassa Island": "navassa-island",
+      "Clipperton Island": "clipperton-island",
+      "Coral Sea Islands": "coral-sea-islands",
+      "Ashmore and Cartier Islands": "ashmore-and-cartier-islands",
+      "Pitcairn Islands": "pitcairn-islands",
+      "Netherlands Antilles": "netherlands-antilles",
+      "Curaçao": "curacao",
+      "Aruba": "aruba",
+      "Russia": "russia",
+      "Russian Federation": "russia",
+      "Iran": "iran",
+      "Islamic Republic of Iran": "iran",
+      "Korea": "south-korea",
+      "Republic of Korea": "south-korea",
+      "Korea Republic": "south-korea",
+      "Democratic People's Republic of Korea": "north-korea",
+      "DPRK": "north-korea",
+      "China": "china",
+      "People's Republic of China": "china",
+      "PRC": "china",
+      "Taiwan": "taiwan",
+      "Republic of China": "taiwan",
+      "ROC": "taiwan",
+      "Vietnam": "vietnam",
+      "Viet Nam": "vietnam",
+      "Socialist Republic of Vietnam": "vietnam",
+      "Myanmar": "myanmar",
+      "Burma": "myanmar",
+      "Republic of Myanmar": "myanmar",
+      "Macedonia": "macedonia",
+      "North Macedonia": "macedonia",
+      "Former Yugoslav Republic of Macedonia": "macedonia",
+      "FYROM": "macedonia",
+      "Eswatini": "swaziland",
+      "Swaziland": "swaziland",
+      "Kingdom of Eswatini": "swaziland",
+      // British territories and dependencies
+      "Gibraltar": "gibraltar",
+      "Bermuda": "bermuda",
+      "Falkland Islands": "falkland-islands",
+      "South Georgia and South Sandwich Islands": "south-georgia-and-the-south-sandwich-islands",
+      "British Antarctic Territory": "united-kingdom",
+      "Akrotiri and Dhekelia": "akrotiri",
+      "Dhekelia": "dhekelia",
+      "Akrotiri": "akrotiri",
+      "Pitcairn": "pitcairn-islands",
+      "Tristan da Cunha": "saint-helena",
+      "Ascension Island": "saint-helena",
+      // Other territories that might use parent country flags
+      "Greenland": "greenland",
+      "Faroe Islands": "faroe-islands",
+      "Åland Islands": "finland",
+      "Aland Islands": "finland"
+    };
+
+    // Check direct mapping first
+    if (countryFlagMap[cleanCountryName]) {
+      return countryFlagMap[cleanCountryName];
+    }
+
+    // Check original name if cleaning didn't help
+    if (countryFlagMap[countryName]) {
+      return countryFlagMap[countryName];
+    }
+
+    // Convert country name to filename format
+    let filename = cleanCountryName.toLowerCase()
+      .replace(/'/g, "")  // Remove apostrophes
+      .replace(/[^a-z0-9]/g, "-")  // Replace non-alphanumeric with hyphens
+      .replace(/-+/g, "-")  // Replace multiple hyphens with single
+      .replace(/^-|-$/g, "");  // Remove leading/trailing hyphens
+
+    return filename;
+  }
+
+  // Check if flag image exists
+  function getFlagImagePath(countryName) {
+    const filename = getFlagFilename(countryName);
+    if (!filename) return null;
+    return `img/flags/${filename}.png`;
+  }
+
   // Parse coordinates
   function parseCoordinateString(coordStr, isLat) {
     if (!coordStr || coordStr === "N/A") return "N/A";
@@ -236,6 +428,71 @@
       return;
     }
 
+    // Get flag image path for the country
+    const flagImagePath = getFlagImagePath(country);
+    
+    // Extract UN/LOCODE from first terminal's GISIS number
+    let unLocode = "N/A";
+    if (terminals.length > 0 && terminals[0].gisisNumber && terminals[0].gisisNumber !== "N/A") {
+      const gisisNumber = terminals[0].gisisNumber.toString();
+      const dashIndex = gisisNumber.indexOf('-');
+      if (dashIndex > 0) {
+        unLocode = gisisNumber.substring(0, dashIndex);
+      }
+    }
+    
+    // Add port and country info container
+    const portInfoContainer = document.createElement("div");
+    portInfoContainer.className = "bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md border border-blue-200 mb-6";
+    portInfoContainer.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+          <div class="flex-shrink-0">
+            ${flagImagePath ? `
+              <img src="${flagImagePath}" alt="${country} flag" class="w-16 h-12 rounded shadow-md border border-gray-300" 
+                   onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+              <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="display: none;">
+                <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+                  <line x1="12" y1="6" x2="12" y2="18"></line>
+                  <circle cx="12" cy="4" r="2"></circle>
+                  <line x1="8" y1="8" x2="16" y2="8"></line>
+                  <path d="M12 18 L8 14"></path>
+                  <path d="M12 18 L16 14"></path>
+                  <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                  <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+                </g>
+              </svg>
+            ` : `
+              <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <g stroke-linecap="round" stroke-linejoin="round" stroke-width="2" fill="none">
+                  <line x1="12" y1="6" x2="12" y2="18"></line>
+                  <circle cx="12" cy="4" r="2"></circle>
+                  <line x1="8" y1="8" x2="16" y2="8"></line>
+                  <path d="M12 18 L8 14"></path>
+                  <path d="M12 18 L16 14"></path>
+                  <path d="M8 14 Q6 14 6 16 Q6 18 8 18"></path>
+                  <path d="M16 14 Q18 14 18 16 Q18 18 16 18"></path>
+                </g>
+              </svg>
+            `}
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">${port}</h2>
+            <p class="text-lg text-gray-600">${country}</p>
+          </div>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-500 mb-1">UN/LOCODE:</p>
+          <p class="text-lg font-bold text-gray-800">${unLocode}</p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm text-gray-500 mb-1">Terminals found</p>
+          <p class="text-2xl font-bold text-blue-600">${terminals.length}</p>
+        </div>
+      </div>
+    `;
+    terminalsContainer.appendChild(portInfoContainer);
+
     terminals.forEach((terminal) => {
       const card = document.createElement("div");
       card.className =
@@ -298,7 +555,7 @@
           const payload = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
           };
-          const apiKey = "AIzaSyAFDjVTE4DrmuuNLOHVRSc_X2h_9iggCJM";
+          const apiKey = "AIzaSyCHjhK5M3ZM5RCf8ttZVNC7JDLEX9U4eOA";
           const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
           const response = await fetch(apiUrl, {

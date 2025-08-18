@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Flags</title>
+
+    <!-- Bootstrap -->
+    <script src="bootstrap/js/night_mode.js"></script>
+    <link href="bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="bootstrap/css/style.css" rel="stylesheet"> 
+
+  </head>
+  <body id="deviceready">
+     <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#" onclick="history.back();return false;"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span></a>
+           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#set" aria-expanded="false" aria-controls="set" style="padding-bottom: 0px;padding-top: 5px;">         
+           <span class="glyphicon glyphicon-cog" aria-hidden="true" style="color:#FFFFFF;font-size:22px;"></span>
+          </button>
+          <a class="navbar-brand" href="#" id="headapp"></a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse"></div>
+         <div id="set" class="collapse navbar-collapse"><ul class="nav navbar-nav"> <div class="col-xs-8" style="padding-top: 10px;"><li><p style="color: #9c9c9c;float: left;" id="text_night">Night Mode:</p></li></div><div class="col-xs-4" id="night_mode_switcher"></div></ul> <ul class="nav navbar-nav">
+            <div class="col-xs-6" style="padding-top: 10px;">
+              <li><p style="color: #9c9c9c;float: left;" id="f_s">Font Size:</p></li>
+            </div>
+            <div class="col-xs-2"><span style="padding-top: 10px;color:#FFFFFF;font-size:20px;" class="glyphicon glyphicon-arrow-up" aria-hidden="true" onclick="decrease_size();"></span></div>
+            <div class="col-xs-2"><span style="padding-top: 10px;color:#FFFFFF;font-size:20px;" class="glyphicon glyphicon-arrow-down" aria-hidden="true" onclick="increase_size();"></span></div>
+            <div class="col-xs-2"><span style="padding-top: 10px;color:#FFFFFF;font-size:20px;" class="glyphicon glyphicon-remove-circle" aria-hidden="true" onclick="clear_size();"></span></div>
+            
+          </ul></div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row" style="margin-bottom: 10px;">
+       <div class="col-xs-8" id="donate">
+          
+        </div>
+        <div class="col-xs-4" >
+          
+             <aside id="aside1"> 
+           <button type="button" class="btn btn-warning btn-block" aria-haspopup="true" aria-expanded="false" id="btn_lang" style="overflow: hidden;"></button>  
+          </aside>  
+         
+        </div>       
+      </div>
+      <div class="row" id="main_content">
+        <div class="col-md-12" style="text-align:center;">
+          <h2 id="title_flags"></h2>
+        </div>
+        <div class="col-md-12" style="text-align:center;">
+          <div id="but" style="margin-bottom: 10px;"></div>
+        </div>
+        <div class="col-md-12" style="text-align:center;">
+          <input type="text" class ="form-control" id="search" name="search" onkeyup="fastsearch('search')" style="margin-bottom: 20px;">
+        </div>
+        <div class="col-md-12" style="text-align:center;">
+         <div id="search_result">
+
+          </div>
+        </div>
+        <div class="col-md-12" style="text-align:center;">          
+          <div id="countries">
+
+          </div>    
+        </div>
+      </div>
+
+      <hr>
+
+      <footer id="footer">
+        
+      </footer>
+
+    </div><!-- /.container -->
+    <script type="text/javascript" src="cordova.js"></script>
+    <script src="bootstrap/js/jq3.js"></script>
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="bootstrap/js/menu.js"></script>
+    <script src="bootstrap/js/flags.js"></script>
+    <script src="bootstrap/js/lang_btn.js"></script>
+
+  </body>
+</html>

@@ -441,7 +441,7 @@
             <!-- MF/HF Test Stations Tool -->
             <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200">
               <div class="flex items-center justify-center mb-4">
-                <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-12 h-12 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <!-- Portable VHF Radio Icon -->
                   <rect x="4" y="8" width="16" height="12" rx="2" stroke-width="2"/>
                   <rect x="6" y="10" width="12" height="8" rx="1" fill="currentColor" opacity="0.2"/>
@@ -461,12 +461,59 @@
               </p>
               <button 
                 onclick="window.location.href='mfhf_test.html'" 
-                class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform"
+                class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform"
               >
                 Open Test Stations
               </button>
             </div>
 
+          </div>
+
+          <!-- Desktop Version Download Section -->
+          <div class="max-w-4xl mx-auto mt-6">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-shadow duration-200 h-full">
+              <div class="flex flex-col items-center justify-center h-full">
+                              <div class="flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+              </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Desktop Version Download</h3>
+                <p class="text-gray-600 text-center mb-6 text-sm">
+                  Portable version for offline use
+                </p>
+                
+                                <!-- Download Buttons Row -->
+                <div class="flex flex-wrap justify-center gap-2 w-full max-w-4xl">
+                  <a 
+                    href="seamate_setup_32.exe" 
+                    download="seamate_setup_32.exe"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
+                  >
+                    🖥 Windows-x32
+                  </a>
+                  <a 
+                    href="seamate_setup_64.exe" 
+                    download="seamate_setup_64.exe"
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
+                  >
+                    🖥 Windows-x64
+                  </a>
+                  <button 
+                    disabled
+                    class="bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed text-sm opacity-60 text-center min-w-[120px]"
+                  >
+                     iOS - Coming soon..
+                  </button>
+                  <button 
+                    disabled
+                    class="bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed text-sm opacity-60 text-center min-w-[120px]"
+                  >
+                    🤖 Android - Coming soon..
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

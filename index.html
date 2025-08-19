@@ -485,18 +485,36 @@
                 
                                 <!-- Download Buttons Row -->
                 <div class="flex flex-wrap justify-center gap-2 w-full max-w-4xl">
-                  <button 
-                    onclick="downloadFile('seamate_setup_32.exe', 'Windows-x32')"
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
-                  >
-                    🖥 Windows-x32
-                  </button>
-                  <button 
-                    onclick="downloadFile('seamate_setup_64.exe', 'Windows-x64')"
-                    class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
-                  >
-                    🖥 Windows-x64
-                  </button>
+                  <div class="flex flex-col gap-1">
+                    <button 
+                      onclick="downloadFile('seamate_setup_32.exe', 'Windows-x32')"
+                      class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
+                    >
+                      🖥 Windows-x32
+                    </button>
+                    <a 
+                      href="https://github.com/sorokovyi/seamate-buddy/raw/main/seamate_setup_32.exe" 
+                      target="_blank"
+                      class="text-xs text-purple-600 hover:text-purple-700 underline"
+                    >
+                      Direct link (if button doesn't work)
+                    </a>
+                  </div>
+                  <div class="flex flex-col gap-1">
+                    <button 
+                      onclick="downloadFile('seamate_setup_64.exe', 'Windows-x64')"
+                      class="bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 transform text-sm text-center min-w-[120px]"
+                    >
+                      🖥 Windows-x64
+                    </button>
+                    <a 
+                      href="https://github.com/sorokovyi/seamate-buddy/raw/main/seamate_setup_64.exe" 
+                      target="_blank"
+                      class="text-xs text-purple-600 hover:text-purple-700 underline"
+                    >
+                      Direct link (if button doesn't work)
+                    </a>
+                  </div>
                   <button 
                     disabled
                     class="bg-gray-400 text-white font-medium py-3 px-4 rounded-lg cursor-not-allowed text-sm opacity-60 text-center min-w-[120px]"
@@ -674,21 +692,29 @@
 
       // Download function for large files
       function downloadFile(filename, version) {
+        // Use direct GitHub raw URL for large files
         const url = `https://github.com/sorokovyi/seamate-buddy/raw/main/${filename}`;
+        
+        // Show loading message
+        console.log(`Starting download of ${version}...`);
         
         // Create a temporary link element
         const link = document.createElement('a');
         link.href = url;
         link.download = filename;
         link.target = '_blank';
+        link.rel = 'noopener noreferrer';
         
         // Add to DOM, click, and remove
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         
-        // Show user feedback
-        console.log(`Starting download of ${version}...`);
+        // Alternative method if direct download doesn't work
+        setTimeout(() => {
+          // Open in new tab as fallback
+          window.open(url, '_blank');
+        }, 100);
       }
     </script>
   </body>

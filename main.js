@@ -451,7 +451,7 @@
     const portInfoContainer = document.createElement("div");
     portInfoContainer.className = "bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-md border border-blue-200 mb-6";
     portInfoContainer.innerHTML = `
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div class="flex items-center space-x-4">
           <div class="flex-shrink-0">
             ${flagImagePath ? `
@@ -482,18 +482,20 @@
               </svg>
             `}
           </div>
-          <div>
-            <h2 class="text-2xl font-bold text-gray-900 mb-1">${port}</h2>
-            <p class="text-lg text-gray-600">${country}</p>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-xl md:text-2xl font-bold text-gray-900 mb-1 truncate">${port}</h2>
+            <p class="text-base md:text-lg text-gray-600 truncate">${country}</p>
           </div>
         </div>
-        <div class="text-center">
-          <p class="text-sm text-gray-500 mb-1">UN/LOCODE:</p>
-          <p class="text-lg font-bold text-gray-800">${unLocode}</p>
-        </div>
-        <div class="text-right">
-          <p class="text-sm text-gray-500 mb-1">Terminals found</p>
-          <p class="text-2xl font-bold text-blue-600">${terminals.length}</p>
+        <div class="flex justify-between md:justify-end space-x-4 md:space-x-6">
+          <div class="text-center">
+            <p class="text-xs md:text-sm text-gray-500 mb-1">UN/LOCODE:</p>
+            <p class="text-sm md:text-lg font-bold text-gray-800">${unLocode}</p>
+          </div>
+          <div class="text-center">
+            <p class="text-xs md:text-sm text-gray-500 mb-1">Terminals found</p>
+            <p class="text-xl md:text-2xl font-bold text-blue-600">${terminals.length}</p>
+          </div>
         </div>
       </div>
     `;

@@ -1,5 +1,6 @@
 # SeaMate Buddy 🚢
 
+Website available there: https://sorokovyi.github.io/seamate-buddy/
 A comprehensive maritime companion application designed for seafarers and maritime professionals.
 
 ## 🌊 Features

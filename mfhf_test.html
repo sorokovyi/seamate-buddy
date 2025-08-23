@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="logo.png" />
     <title>MF/HF Test Stations - SeaMate Buddy</title>
     <style>
       * {
@@ -351,6 +352,22 @@
         border-bottom: none;
       }
 
+      /* Region header styles */
+      .region-header {
+        background-color: #f8f9fa !important;
+      }
+
+      .region-title {
+        font-weight: 700 !important;
+        font-size: 16px !important;
+        color: #111827 !important;
+        text-align: left !important;
+        padding: 16px 12px !important;
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%) !important;
+        border-top: 2px solid #2563eb !important;
+        border-bottom: 2px solid #2563eb !important;
+      }
+
       /* Footer styles */
       .footer {
         background: #F1EFEC;
@@ -511,6 +528,28 @@
         }
       }
 
+      /* Adaptive image sizes */
+      @media (max-width: 577px) {
+        .adaptive-image {
+          max-width: 216px !important; /* 270px - 20% = 216px */
+          max-height: 144px !important; /* 180px - 20% = 144px */
+        }
+      }
+
+      @media (min-width: 578px) and (max-width: 1199px) {
+        .adaptive-image {
+          max-width: 337.5px !important; /* 270px + 25% = 337.5px */
+          max-height: 225px !important; /* 180px + 25% = 225px */
+        }
+      }
+
+      @media (min-width: 1200px) {
+        .adaptive-image {
+          max-width: 405px !important; /* 270px + 50% = 405px */
+          max-height: 270px !important; /* 180px + 50% = 270px */
+        }
+      }
+
       @media print {
         /* Force white background for print */
         body {
@@ -521,15 +560,48 @@
           margin: 0;
         }
         
-        /* Hide interactive elements */
+        /* Hide interactive elements but keep header */
         .print-btn,
         .back-btn,
         .menu-btn,
-        .subtitle,
         .aside-menu,
-        .header-nav,
-        .footer {
+        .footer,
+        .content-section:first-of-type,
+        .header-container {
           display: none !important;
+        }
+        
+        /* Keep header with logo and title */
+        .main-header {
+          margin-bottom: 20px;
+          display: block !important;
+        }
+        
+        .logo-title {
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          margin-bottom: 10px;
+        }
+        
+        .logo-title img {
+          width: 48px;
+          height: 48px;
+        }
+        
+        .logo-title h1 {
+          font-size: 24px;
+          margin: 0;
+          color: black !important;
+        }
+        
+        .subtitle {
+          display: block !important;
+          text-align: center;
+          color: black !important;
+          font-size: 16px;
+          margin: 0;
         }
         
         /* Page break control */
@@ -538,55 +610,13 @@
           margin: 1.5cm;
         }
         
-        /* Main header for print */
-        .main-header {
-          margin-bottom: 20px;
-        }
-        
-        .main-header h1 {
-          font-size: 24px;
-          margin: 0;
-          text-align: center;
-          color: black !important;
-        }
-        
-        /* Map section - First page */
-        .content-section:first-of-type {
-          background: white !important;
-          border: none !important;
-          padding: 0;
-          margin: 0;
-          page-break-after: always;
-          page-break-inside: avoid;
-        }
-        
-        .content-section:first-of-type .section-title {
-          font-size: 20px;
-          margin-bottom: 15px;
-          text-align: center;
-          color: black !important;
-        }
-        
-        .content-section:first-of-type .image-container {
-          display: flex;
-          justify-content: center;
-          margin: 0;
-        }
-        
-        .content-section:first-of-type .station-image {
-          max-width: 100%;
-          height: auto;
-          border: 1px solid #ddd;
-        }
-        
-        /* Table section - Second page */
+        /* Show the table section starting from first page */
         .content-section:last-of-type {
           background: white !important;
           border: none !important;
           padding: 0;
           margin: 0;
-          page-break-before: always;
-          page-break-inside: avoid;
+          display: block !important;
         }
         
         .content-section:last-of-type .section-title {
@@ -621,6 +651,22 @@
           background: #f9f9f9 !important;
         }
         
+        /* Region header styles for print */
+        .region-header {
+          background-color: #f8f9fa !important;
+        }
+        
+        .region-title {
+          font-weight: 700 !important;
+          font-size: 14px !important;
+          color: black !important;
+          text-align: left !important;
+          padding: 12px 8px !important;
+          background: #e3f2fd !important;
+          border-top: 1px solid #2563eb !important;
+          border-bottom: 1px solid #2563eb !important;
+        }
+        
         /* Ensure all text is black */
         .section-title,
         .station-table th,
@@ -628,9 +674,9 @@
           color: black !important;
         }
         
-        /* Prevent orphaned content */
+        /* Allow natural page breaks */
         .content-section {
-          break-inside: avoid;
+          break-inside: auto;
         }
       }
     </style>
@@ -739,9 +785,20 @@
     <main>
       <!-- Test Stations Map Section -->
       <section class="content-section">
-        <h2 class="section-title">Test Stations Map</h2>
-        <div class="image-container">
-          <img src="mfhf-test-stations.jpg" alt="MF/HF Test Stations Map" class="station-image">
+        <h2 class="section-title">Coast Stations Map</h2>
+        <div class="image-container" style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+          <img src="mfhf-test-stations.jpg" alt="MF/HF Test Stations Map" class="station-image clickable-image adaptive-image" style="max-width: 270px; max-height: 180px; width: auto; height: auto; cursor: pointer;" onclick="openImageModal('mfhf-test-stations.jpg', 'MF/HF Test Stations Map')">
+          <img src="mfhf_northsea.jpg" alt="MF/HF North Sea Map" class="station-image clickable-image adaptive-image" style="max-width: 270px; max-height: 180px; width: auto; height: auto; cursor: pointer;" onclick="openImageModal('mfhf_northsea.jpg', ' North Sea coast stations')">
+        </div>
+        <p style="text-align: center; color: #666; font-size: 14px; margin-top: 10px; font-style: italic;">Click to open</p>
+        
+        <!-- Modal for full-size images -->
+        <div id="imageModal" class="modal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9);">
+          <div class="modal-content" style="position: relative; margin: auto; display: block; width: 90%; height: 90%; max-width: none; max-height: none;">
+            <span class="close-modal" style="position: absolute; top: 15px; right: 35px; color: #f1f1f1; font-size: 40px; font-weight: bold; cursor: pointer;">&times;</span>
+            <img id="modalImage" style="width: 100%; height: 100%; object-fit: contain;">
+            <div id="modalCaption" style="margin: auto; display: block; width: 80%; max-width: 700px; text-align: center; color: #ccc; padding: 10px 0; height: 150px;"></div>
+          </div>
         </div>
       </section>
 
@@ -758,23 +815,45 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Qatar Doha Radio</td>
-              <td>004661010</td>
-              <td>2Mhz</td>
-              <td>Persian gulf</td>
+            <!-- Northern Europe Region -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🌊 Northern Europe</td>
             </tr>
             <tr>
               <td>Humber</td>
               <td>002320007</td>
               <td>2Mhz</td>
-              <td>North / Baltic Seas</td>
+              <td>North sea / UK East coast</td>
             </tr>
             <tr>
               <td>Aberdeen</td>
               <td>002320004</td>
               <td>2Mhz</td>
-              <td>North / Baltic Seas</td>
+              <td>North sea / UK East coast</td>
+            </tr>
+            <tr>
+              <td>Solent MRCC</td>
+              <td>002320011</td>
+              <td>2Mhz</td>
+              <td>UK South coast</td>
+            </tr>
+            <tr>
+              <td>Falmouth MRCC</td>
+              <td>002320014</td>
+              <td>2Mhz</td>
+              <td>UK SW coast</td>
+            </tr>
+            <tr>
+              <td>Griz-Nez</td>
+              <td>002275100</td>
+              <td>2Mhz</td>
+              <td>Douvre Strait</td>
+            </tr>
+            <tr>
+              <td>Jobourg MRCC</td>
+              <td>002275200</td>
+              <td>2Mhz</td>
+              <td>North France</td>
             </tr>
             <tr>
               <td>Lyngby</td>
@@ -782,83 +861,116 @@
               <td>2Mhz</td>
               <td>North / Baltic Seas</td>
             </tr>
+
+            <!-- Mediterranean & Southern Europe -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🏖️ Mediterranean & Southern Europe</td>
+            </tr>
             <tr>
-              <td>Taganrog Radio</td>
-              <td>002734487</td>
-              <td>2Mhz</td>
-              <td>Black Sea</td>
+              <td>Coruna Radio</td>
+              <td>002240992</td>
+              <td>-</td>
+              <td>Biscay</td>
+            </tr>
+            <tr>
+              <td>Madrid</td>
+              <td>002241078</td>
+              <td>8, 12 MHz</td>
+              <td>Spain / Med. Sea</td>
             </tr>
             <tr>
               <td>Olympia Radio</td>
               <td>002371000</td>
               <td>Any</td>
-              <td>Med. Sea</td>
+              <td>Greece /Med. Sea</td>
+            </tr>
+            <tr>
+              <td>Palermo</td>
+              <td>002470002</td>
+              <td>4Mhz</td>
+              <td>Sicily / Med. Sea</td>
+            </tr>
+            <tr>
+              <td>Cyprus Radio</td>
+              <td>002091000</td>
+              <td>4, 8, 16 MHz</td>
+              <td>Cyprus / Med. Sea</td>
+            </tr>
+
+            <!-- Black Sea & Middle East -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">⚓ Black Sea & Middle East</td>
             </tr>
             <tr>
               <td>Istanbul Radio</td>
               <td>002711000</td>
               <td>16Mhz / 12Mhz</td>
-              <td>Black Sea</td>
+              <td>Black Sea / Marmara Sea</td>
             </tr>
             <tr>
-              <td>Ho Chi Minh-Ville</td>
-              <td>005741993</td>
-              <td>16Mhz / 12Mhz</td>
-              <td>Vietnam</td>
+              <td>Taganrog Radio</td>
+              <td>002734487</td>
+              <td>2Mhz</td>
+              <td>Azov / Black Sea</td>
             </tr>
             <tr>
-              <td>Hong Kong</td>
-              <td>004773500</td>
+              <td>Qatar Doha Radio</td>
+              <td>004661010</td>
+              <td>2Mhz</td>
+              <td>Persian gulf</td>
+            </tr>
+            <tr>
+              <td>Baku (Caspian Sea)</td>
+              <td>004231000</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Azerbaijan / Caspian Sea</td>
+            </tr>
+            <tr>
+              <td>Anzali Radio (Caspian Sea)</td>
+              <td>004225500</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Iran / Caspian Sea</td>
+            </tr>
+            <tr>
+              <td>Amir Abad Radio (Caspian Sea)</td>
+              <td>004225601</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Iran / Caspian Sea</td>
+            </tr>
+            <tr>
+              <td>Constanta Radio</td>
+              <td>002640570</td>
+              <td>4, 8, 12 MHz</td>
+              <td>Romania / Black Sea</td>
+            </tr>
+            <tr>
+              <td>Lattakia Radio</td>
               <td>-</td>
-              <td>Hong Kong</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Syria / Med. Sea</td>
             </tr>
             <tr>
-              <td>Shanghai</td>
-              <td>004122100</td>
-              <td>Any</td>
-              <td>China</td>
+              <td>Abbas Radio (Persian Gulf)</td>
+              <td>004225300</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Iran / Persian Gulf</td>
             </tr>
             <tr>
-              <td>Solent MRCC</td>
-              <td>002320011</td>
-              <td>2Mhz</td>
-              <td>UK</td>
+              <td>Khomeini Radio (Persian Gulf)</td>
+              <td>004225100</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Iran / Persian Gulf</td>
+            </tr>
+
+            <!-- Africa -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🌍 Africa</td>
             </tr>
             <tr>
-              <td>Falmouth MRCC</td>
-              <td>002320014</td>
-              <td>2Mhz</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Griz-Nez</td>
-              <td>002275100</td>
-              <td>2Mhz</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Jobourg MRCC</td>
-              <td>002275200</td>
-              <td>2Mhz</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Boston MA</td>
-              <td>003669991</td>
-              <td>8Mhz</td>
-              <td>Caribbean Sea / East coat of USA</td>
-            </tr>
-            <tr>
-              <td>Iqaluit</td>
-              <td>003160023</td>
-              <td>16Mhz</td>
-              <td>E coat of Canada</td>
-            </tr>
-            <tr>
-              <td>Curacao</td>
-              <td>003061000</td>
+              <td>Abidjan</td>
+              <td>006191000</td>
               <td>-</td>
-              <td>Caribbean Sea</td>
+              <td>Côte d'Ivoire</td>
             </tr>
             <tr>
               <td>Tenerife</td>
@@ -867,52 +979,115 @@
               <td>Africa NW coast</td>
             </tr>
             <tr>
-              <td>Madrid</td>
-              <td>002241008</td>
-              <td>8Mhz</td>
-              <td>Med. Sea</td>
-            </tr>
-            <tr>
-              <td>Cape Town</td>
+              <td>Cape Town Radio</td>
               <td>006010001</td>
-              <td>-</td>
+              <td>4,6,8,12,16 MHz</td>
               <td>South Africa</td>
             </tr>
             <tr>
-              <td>Wiluna</td>
-              <td>005030001</td>
-              <td>-</td>
-              <td>Australia / Indian Ocean</td>
+              <td>Mauritius Radio</td>
+              <td>006452700</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Mauritius</td>
+            </tr>
+
+            <!-- North America -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🗽 North America</td>
             </tr>
             <tr>
-              <td>Coruna</td>
-              <td>002240992</td>
-              <td>-</td>
-              <td>Biscay</td>
+              <td>Iqaluit</td>
+              <td>003160023</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Canada E coast</td>
             </tr>
             <tr>
-              <td>Bangkok</td>
-              <td>005671000</td>
-              <td>8Mhz</td>
-              <td>Thailand</td>
+              <td>Boston</td>
+              <td>003669991</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA East coast</td>
             </tr>
             <tr>
-              <td>Palermo</td>
-              <td>002470002</td>
-              <td>4Mhz</td>
-              <td>Med. Sea</td>
+              <td>Miami</td>
+              <td>003669997</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA Miami</td>
             </tr>
             <tr>
               <td>New Orleans</td>
-              <td>003669908</td>
-              <td>-</td>
-              <td>USA</td>
+              <td>003669998</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA New Orleans</td>
             </tr>
             <tr>
-              <td>Point Reyes</td>
+              <td>San Francisco</td>
               <td>003669990</td>
-              <td>4Mhz</td>
-              <td>USA west coast</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA West coast</td>
+            </tr>
+            <tr>
+              <td>Kodiak</td>
+              <td>003669899</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA Alaska</td>
+            </tr>
+            <tr>
+              <td>Honolulu</td>
+              <td>003669993</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>USA Hawaii</td>
+            </tr>
+            <tr>
+              <td>Mobile</td>
+              <td>003660030</td>
+              <td>-</td>
+              <td>USA Gulf</td>
+            </tr>
+
+            <!-- Caribbean & South America -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🌴 Caribbean & South America</td>
+            </tr>
+            <tr>
+              <td>Curacao</td>
+              <td>003061000</td>
+              <td>-</td>
+              <td>Caribbean Sea</td>
+            </tr>
+            <tr>
+              <td>San Juan</td>
+              <td>003669992</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Puerto Rico</td>
+            </tr>
+            <tr>
+              <td>Manaus Radio</td>
+              <td>007100003</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Brazil</td>
+            </tr>
+            <tr>
+              <td>Recife Radio</td>
+              <td>007100002</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Brazil</td>
+            </tr>
+            <tr>
+              <td>Valparaiso</td>
+              <td>007251860</td>
+              <td>12Mhz</td>
+              <td>South America West / Chile</td>
+            </tr>
+
+            <!-- Asia & Oceania -->
+            <tr class="region-header">
+              <td colspan="4" class="region-title">🌏 Asia & Oceania</td>
+            </tr>
+            <tr>
+              <td>Shanghai Radio</td>
+              <td>004122100</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>China</td>
             </tr>
             <tr>
               <td>Dalian</td>
@@ -921,28 +1096,118 @@
               <td>China</td>
             </tr>
             <tr>
-              <td>Manaus</td>
-              <td>007100003</td>
-              <td>12 MHz</td>
-              <td>South America / Brazil</td>
-            </tr>
-            <tr>
-              <td>Valparaiso</td>
-              <td>007251860</td>
-              <td>12Mhz</td>
-              <td>South America / Chile</td>
-            </tr>
-            <tr>
-              <td>Mobile</td>
-              <td>003660030</td>
-              <td>-</td>
-              <td>USA</td>
+              <td>Hong Kong </td>
+              <td>004773500</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Hong Kong</td>
             </tr>
             <tr>
               <td>Hai phong</td>
               <td>005741996</td>
               <td>-</td>
               <td>Vietnam</td>
+            </tr>
+            <tr>
+              <td>Ho Chi Minh</td>
+              <td>005743030</td>
+              <td>8 MHz</td>
+              <td>Vietnam</td>
+            </tr>
+            <tr>
+              <td>Hai Phong</td>
+              <td>005741050</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Vietnam</td>
+            </tr>
+            <tr>
+              <td>Bangkok Radio</td>
+              <td>005671000</td>
+              <td>4,6,8,12 MHz</td>
+              <td>Thailand</td>
+            </tr>
+            <tr>
+              <td>Wiluna</td>
+              <td>005030001</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Australia</td>
+            </tr>
+            <tr>
+              <td>Charleville</td>
+              <td>005030001</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Australia</td>
+            </tr>
+            <tr>
+              <td>Taupo Maritime Radio</td>
+              <td>005120010</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>New Zealand</td>
+            </tr>
+            <tr>
+              <td>RCC Suva</td>
+              <td>005201100</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Fiji</td>
+            </tr>
+            <tr>
+              <td>Sector Guam</td>
+              <td>003669994</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Guam (U.S.)</td>
+            </tr>
+            <tr>
+              <td>Mumbai</td>
+              <td>004192203</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>India</td>
+            </tr>
+            <tr>
+              <td>Port Blair</td>
+              <td>004194409</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>India</td>
+            </tr>
+            <tr>
+              <td>Porbandar</td>
+              <td>004192202</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>India</td>
+            </tr>
+            <tr>
+              <td>Mandapam</td>
+              <td>004194406</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>India</td>
+            </tr>
+            <tr>
+              <td>Belawan</td>
+              <td>005250003</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Indonesia</td>
+            </tr>
+            <tr>
+              <td>Jakarta</td>
+              <td>005250000</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Indonesia</td>
+            </tr>
+            <tr>
+              <td>Surabaya</td>
+              <td>005250001</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Indonesia</td>
+            </tr>
+            <tr>
+              <td>Incheon Coast Guard Station</td>
+              <td>004401001</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Republic of Korea</td>
+            </tr>
+            <tr>
+              <td>Seoul Radio</td>
+              <td>004400002</td>
+              <td>4,6,8,12,16 MHz</td>
+              <td>Republic of Korea</td>
             </tr>
           </tbody>
         </table>
@@ -1038,6 +1303,36 @@
         sessionStorage.setItem('navigateTo', 'eta-calculator');
         window.location.href = 'index.html#eta-calculator';
       }
+
+      // Image modal functions
+      function openImageModal(imageSrc, caption) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+        
+        modal.style.display = 'block';
+        modalImg.src = imageSrc;
+        modalCaption.innerHTML = caption;
+      }
+
+      // Close modal when clicking on X
+      document.querySelector('.close-modal').addEventListener('click', function() {
+        document.getElementById('imageModal').style.display = 'none';
+      });
+
+      // Close modal when clicking outside the image
+      document.getElementById('imageModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+        }
+      });
+
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.getElementById('imageModal').style.display = 'none';
+        }
+      });
     </script>
   </body>
 </html>

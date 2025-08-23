@@ -558,7 +558,7 @@
         try {
           if (!navigator.onLine) throw new Error("No internet connection");
 
-          const prompt = `Based on official sailing directions and eNP Publications, provide factual information about the ${terminal} terminal at the port of ${port} in ${country}. The terminal is described as: "${description}". Only include verified facts from nautical publications such as: port facilities, berth specifications, cargo handling capabilities, depths, restrictions, or operational details. Do not speculate or imagine information. If specific details are not available in sailing directions, state that clearly. Format as a single paragraph with only factual data.`;
+          const prompt = `Based on official e-np sailing directions, provide information about the ${terminal} terminal at the port of ${port} in ${country}. The terminal is described as: "${description}". Please structure the response with the following information: Description of port based on official e-np sailing directions, depth in port near berth, density of water in port, load line zone. Only include verified facts from nautical publications. Do not speculate or imagine information. If specific details are not available in sailing directions, state that clearly. Format as a structured response with clear sections for each requested information.`;
 
           const payload = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],

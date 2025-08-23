@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="logo.png" />
     <title>Maritime Signal Flags</title>
     <style>
       * {
@@ -516,13 +517,35 @@
           margin: 0;
         }
         
+        /* Show logo and title for print */
+        .logo-title {
+          display: flex !important;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 20px;
+          text-decoration: none;
+          color: black !important;
+        }
+        
+        .logo-title img {
+          width: 48px;
+          height: 48px;
+        }
+        
+        .logo-title h1 {
+          font-size: 28px;
+          font-weight: 800;
+          margin: 0;
+          color: black !important;
+        }
+        
         /* Hide interactive elements */
         .print-btn,
         .back-btn,
         .menu-btn,
         .subtitle,
         .aside-menu,
-        .header-nav,
         .footer {
           display: none !important;
         }
@@ -555,7 +578,7 @@
         }
         
         .header-container h1 {
-          font-size: 24px;
+          font-size: 20px;
           margin: 0;
           text-align: center;
           color: black !important;
